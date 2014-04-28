@@ -1,15 +1,19 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
-filepath ='2539/2539/documentation/'
+filepath ='2539/documentation/'
 filename = 'BAWE.xls'
 
 data = pd.read_excel(filepath+filename, 'Sheet1')
 
-dg = data['disciplinary group']
-groups = list(set(dg))
-groups.pop(3) # pops the nan value
+columns = ['words','s-units','p-units']
 
-for g in groups:
-    print '###', g, '###'
-    print data[data['disciplinary group']==g][['words','s-units','p-units']].describe()
+data.groupby(['disciplinary group'])[columns].describe()
+
+for g in columns:
+	data[g].hist(by=data['disciplinary group'])
+	plt.suptitle(g)
+	data.boxplot(column=g, by='disciplinary group')
+
+plt.show()
