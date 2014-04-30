@@ -10,7 +10,7 @@ from collections import Counter
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
 
 """
-This function expects a path to the corpus files and extracts metadata and 
+This function expects a path to the corpus files and extracts metadata, person features, lexical features
 """
 def from_corpus(path):
 	dataset = []
@@ -43,7 +43,7 @@ def from_corpus(path):
 		alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 		for letter in alphabet:
 			temp.append(lettercount[letter] / len(bodytext))
-		specialcharacters = ['~' , '@', '\#', '\$', '\%', '\^', '\&', '\*', '-', '_', '=' ,'+', '>', '<', '[', ']', '{', '}', '/', '\\', '\|', '(', ')']
+		specialcharacters = ['~' , '@', '#', '$', '%', '^', '&', '*', '-', '_', '=' ,'+', '>', '<', '[', ']', '{', '}', '/', '\\', '|', '(', ')']
 		for char in specialcharacters:
 			temp.append(lettercount[char] / len(bodytext))
 
@@ -54,6 +54,6 @@ def from_corpus(path):
 		sentences = bodyt.find('s')
 		sentencetext = sentences.get_text() #use this
 	dataset.append(temp)
-	np.asarray(dataset)
+	#np.asarray(dataset)
 
 from_corpus(corpuspath)
