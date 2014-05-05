@@ -51,10 +51,13 @@ def from_corpus(path):
 
 		#Word based features (WB)
 		tokenized = nltk.tokenize.word_tokenize(bodytext)
-		temp.append(len(tokenized)) # Word-based: number of words
-		temp.append(len([word for word in tokenized if len(word)< 4])  / len(tokenized)) # WB number of short words / number of words
-		temp.append(sum([len(word) for word in tokenized]) / len(bodytext)) # WB number of characters in words / number of characters
-		temp.append(sum([len(word) for word in tokenized]) / len (tokenized)) #WB average word length
+		alnum_tokenized = [word for word in tokenized if word.isalnum()]
+		alnum_tokenized_lower = [word.lower() for word in alnum_tokenized] #only alphanumeric characters , lowercased
+
+		temp.append(len(alnum_tokenized_lower)) # Word-based: number of words
+		temp.append(len([word for word in alnum_tokenized_lower if len(word)< 4])  / len(alnum_tokenized_lower)) # WB number of short words / number of words
+		temp.append(sum([len(word) for word in alnum_tokenized_lower]) / len(bodytext)) # WB number of characters in words / number of characters
+		temp.append(sum([len(word) for word in alnum_tokenized_lower]) / len (alnum_tokenized_lower)) #WB average word length
 
 		sentences = bodyt.find_all('s')
 		sum_char = 0
@@ -66,13 +69,15 @@ def from_corpus(path):
 		temp.append(sum_char / len(sentences)) #WB average characters per sentence
 		temp.append(sum_word / len(sentences)) #WB average words per sentence
 
-		tokenizedlower = [word.lower() for word in tokenized]
-		fdist = nltk.FreqDist(tokenized)
+
+		fdist = nltk.FreqDist(alnum_tokenized_lower)
 		vocabulary = fdist.keys()
-		temp.append(len(vocabulary)) # WB number of different words - punctuation included
-		temp.append(len([word for ]))
+		temp.append(len(vocabulary)) # WB number of different words
+		temp.append(len([word for word in alnum_tokenized_lower if fdist[word] == 1])) # WB hapax legonema
+		temp.append(len([word for word in alnum_tokenized_lower if fdist[word] == 2])) # WB hapax dislegonema
 		
-		print temp
+		for i in xrange(1,20):
+			temp.append
 
 		paragraphs = bodyt.p
 		paragraphtext = paragraphs.get_text() #use this
