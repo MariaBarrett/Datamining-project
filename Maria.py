@@ -6,6 +6,8 @@ import nltk
 import lxml
 import re
 from collections import Counter
+import math
+import scipy
 
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
 
@@ -49,13 +51,19 @@ def from_corpus(path):
 		for char in specialcharacters:
 			temp.append(lettercount[char] / len(bodytext))
 
-		#Word based features (WB)
+		#Getting global variables
 		tokenized = nltk.tokenize.word_tokenize(bodytext)
 		alnum_tokenized = [word for word in tokenized if word.isalnum()]
 		alnum_tokenized_lower = [word.lower() for word in alnum_tokenized] #only alphanumeric characters , lowercased
+		textlenght = len(alnum_tokenized_lower)
 
-		temp.append(len(alnum_tokenized_lower)) # Word-based: number of words
-		temp.append(len([word for word in alnum_tokenized_lower if len(word)< 4])  / len(alnum_tokenized_lower)) # WB number of short words / number of words
+		fdist = nltk.FreqDist(alnum_tokenized_lower)
+		vocabulary = fdist.keys()
+		numberofdifferentwords = len(vocabulary)
+
+		#Word based features (WB)
+		temp.append(textlenght) # Word-based: number of words
+		temp.append(len([word for word in alnum_tokenized_lower if len(word)< 4])  / textlenght) # WB number of short words / number of words
 		temp.append(sum([len(word) for word in alnum_tokenized_lower]) / len(bodytext)) # WB number of characters in words / number of characters
 		temp.append(sum([len(word) for word in alnum_tokenized_lower]) / len (alnum_tokenized_lower)) #WB average word length
 
@@ -69,19 +77,48 @@ def from_corpus(path):
 		temp.append(sum_char / len(sentences)) #WB average characters per sentence
 		temp.append(sum_word / len(sentences)) #WB average words per sentence
 
-
-		fdist = nltk.FreqDist(alnum_tokenized_lower)
-		vocabulary = fdist.keys()
-		temp.append(len(vocabulary)) # WB number of different words
-		temp.append(len([word for word in alnum_tokenized_lower if fdist[word] == 1])) # WB hapax legonema
-		temp.append(len([word for word in alnum_tokenized_lower if fdist[word] == 2])) # WB hapax dislegonema
+		temp.append(numberofdifferentwords) # WB number of different words
+		temp.append(len([word for word in alnum_tokenized_lower if fdist[word] == 1]) / textlenght) # WB hapax legonema
+		temp.append(len([word for word in alnum_tokenized_lower if fdist[word] == 2]) / textlenght) # WB hapax dislegonema
 		
-		for i in xrange(1,20):
-			temp.append
+		# WB Lexical richness measures 
+		
+		#Yule's K #The larger the value the smaller the diversity
+		inner = 0
+		for i in xrange(1,21):
+			inner += -(1/textlenght) + (len([word for word in alnum_tokenized_lower if fdist[word] == i]) * (i / textlenght)**2 )
+		Yule = round(10**4 * inner)
+		temp.append(Yule)
 
+		#Simpson's D
+		Simpson = 0
+		for i in xrange(1,21):
+			Simpson += ((len([word for word in alnum_tokenized_lower if fdist[word] == i]) * (i/textlenght) * ((i-1) / textlenght -1)))
+		temp.append(Simpson)
+
+
+		#Sichel's S - the higher the value the richer the text
+		Sichel = len([word for word in alnum_tokenized_lower if fdist[word] == 2]) / textlenght #same as fraction of hapax dislegoma
+		temp.append(Sichel)
+
+		# WB Brunet's W
+		W = len(alnum_tokenized)**(numberofdifferentwords**0.172) #getting W by use of a constant - a parametric method
+		Brunet = (math.log(W) / math.log(len(alnum_tokenized)))**-0.172
+		temp.append(Brunet)
+
+
+		# Honores R / H ?? Uses hapax legomena
+		Honore = round(100 * (math.log(textlenght) / (1-(len([word for word in alnum_tokenized_lower if fdist[word] == 1]) / numberofdifferentwords))))
+		temp.append(Honore)
+
+		#WB frequency of words of length 1 - 20
+		for i in xrange(1,21):
+			temp.append(len([word for word in alnum_tokenized_lower if len(word) == i])  / textlenght)
+
+		#print temp
+		
 		paragraphs = bodyt.p
 		paragraphtext = paragraphs.get_text() #use this
-
 
 	dataset.append(temp)
 	#np.asarray(dataset)
