@@ -33,8 +33,8 @@ def split_authors(data, threshold=3):
 
 	student_id = data['student_id'].unique()
 
-	train = []
-	train_id = []
+	train = []	# List of document ID's
+	train_id = [] # List of student ID's
 	test = []
 	test_id = []
 
