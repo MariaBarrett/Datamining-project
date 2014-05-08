@@ -11,6 +11,8 @@ import scipy
 
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
 
+
+
 """
 This function expects a path to the corpus files and extracts metadata, person features, lexical features
 """
@@ -18,29 +20,28 @@ def from_corpus(path):
 	dataset = []
 	metadata = []
 
+	tagmap = dict([tmap.strip("\n").split("\t") for tmap in open("en-ptb.map", 'r').readlines()])
+	funcwords = sorted([word.strip("\r\n") for word in open("en-func-words.txt", 'r').readlines() if len(nltk.word_tokenize(word)) == 1])
+	print len(funcwords)
+	punctuations = [',','.','?','!',':',';','\'','\"']
+	specialcharacters = ['~' , '@', '#', '$', '%', '^', '&', '*', '-', '_', '=' ,'+', '>', '<', '[', ']', '{', '}', '/', '\\', '|', '(', ')']
+	alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 
-	for xmlfile in path:
+	for xmlfile in path[:2]:
 		#Assigning same id to metadata and dataset arrays
-		i = 0
+		
 		#append document id to both lists 
 		temp_dataset = []
 		temp_metadata = []
 
-		temp_dataset.append(i)
-		temp_metadata.append(i)
-
-		i+=1
-
 		opened = open(xmlfile, 'r')	
 		currentfile = BeautifulSoup(opened, 'xml')
 		
-		meta = currentfile.find('sourceDesc')
-		metafeat = meta.find_all('p')
+		metafeat = currentfile.find('sourceDesc').find_all('p')
 		for feat in metafeat:
 			temp_metadata.append (feat.contents[0])
 
-		persondata = currentfile.find('person')
-		personfeat = persondata.find_all('p')
+		personfeat = currentfile.find('person').find_all('p')
 		for feat in personfeat:
 			temp_metadata.append(feat.contents[0])
 
@@ -58,17 +59,16 @@ def from_corpus(path):
 		temp_dataset.append(bodytext.count(' ') / allchars ) #Lex: number of whitespace characters
 		#can't find a way to count tabs / text contains no tabs
 		lettercount = Counter(bodytext.lower())
-		alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+		
 		for letter in alphabet:
 			temp_dataset.append(lettercount[letter] / allchars)
-		specialcharacters = ['~' , '@', '#', '$', '%', '^', '&', '*', '-', '_', '=' ,'+', '>', '<', '[', ']', '{', '}', '/', '\\', '|', '(', ')']
+		
 		for char in specialcharacters:
 			temp_dataset.append(lettercount[char] / allchars)
 
 		#Getting global variables 
 		tokenized = nltk.tokenize.word_tokenize(bodytext)
-		alnum_tokenized = [word for word in tokenized if word.isalnum()]
-		alnum_tokenized_lower = [word.lower() for word in alnum_tokenized] #only alphanumeric characters , lowercased
+		alnum_tokenized_lower = [word.lower() for word in tokenized if word.isalnum()] #only alphanumeric characters , lowercased
 		num_allwords = len(alnum_tokenized_lower) #number of words
 
 		fdist = nltk.FreqDist(alnum_tokenized_lower)
@@ -130,13 +130,33 @@ def from_corpus(path):
 		for i in xrange(1,21):
 			temp_dataset.append(len([word for word in alnum_tokenized_lower if len(word) == i])  / num_allwords)
 
-		#print temp_dataset
 		
-		paragraphs = bodyt.p
-		paragraphtext = paragraphs.get_text() #use this
+		# Syntactic features
+		ptb_tag_text = nltk.pos_tag(tokenized) # Tagging the text with PTB tags
+		uni_tag_text = [(wt[0],tagmap[wt[1]]) for wt in ptb_tag_text if wt[1] in tagmap.keys()] # Mapping: PTB to uni tags
+		freq_dist = nltk.FreqDist(wt[1] for wt in uni_tag_text) # NLTK frequency distribution over uni tags
+		tag_freq = [freq_dist.freq(uni_tag) for uni_tag in sorted(list(set(tagmap.values())))] # Frequency of uni tags
+		func_freq = [alnum_tokenized_lower.count(fw)/num_allwords for fw in funcwords] # Count the function words in the text
+		punc_freq = [bodytext.count(p)/allchars for p in punctuations] # Count the punctuations in the text relative to overall number of characters
 
-	dataset.append(temp_dataset)
+		temp_dataset += punc_freq+func_freq+tag_freq
+
+		# Structural features
+		sents_no = len(bodyt.find_all('s'))
+		temp_dataset.append(sents_no) #number of sentences
+		paragraphs_no = len(bodyt.find_all('p'))
+		temp_dataset.append(paragraphs_no) #number of paragraphs
+
+		temp_dataset.append(sents_no / paragraphs_no) # number of sentences per paragraph
+		temp_dataset.append(allchars / paragraphs_no) # number of characters per paragraph
+		temp_dataset.append(num_allwords / paragraphs_no) # number of words per paragraph
+
+		dataset.append(temp_dataset)
+		metadata.append(temp_metadata)
+
 	return metadata, dataset
 	#np.asarray(dataset)
 
-from_corpus(corpuspath)
+a = from_corpus(corpuspath)
+
+
