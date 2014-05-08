@@ -8,10 +8,9 @@ import re
 from collections import Counter
 import math
 import scipy
+import featuremap #our own feature map of all the features
 
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
-
-
 
 """
 This function expects a path to the corpus files and extracts metadata, person features, lexical features
@@ -101,7 +100,6 @@ def from_corpus(path):
 		
 		# WB Lexical richness measures
 
-
 		#Yule's K #The larger the value the smaller the diversity. Larger value range
 		inner = 0
 		for i in xrange(1,21): #assumes max_word_len = 20
@@ -154,8 +152,6 @@ def from_corpus(path):
 		temp_dataset.append(allchars / paragraphs_no) # number of characters per paragraph
 		temp_dataset.append(num_allwords / paragraphs_no) # number of words per paragraph
 		blockquotes = len(bodyt.find_all('quote')) #number of block quotes
-
-		print len(temp_dataset)
 
 		#Appending to array
 		dataset.append(temp_dataset)
