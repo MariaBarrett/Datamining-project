@@ -21,8 +21,7 @@ def from_corpus(path):
 	metadata = []
 
 	tagmap = dict([tmap.strip("\n").split("\t") for tmap in open("en-ptb.map", 'r').readlines()])
-	funcwords = sorted([word.strip("\r\n") for word in open("en-func-words.txt", 'r').readlines() if len(nltk.word_tokenize(word)) == 1])
-	print len(funcwords)
+	funcwords = sorted(list(set([word.strip("\r\n") for word in open("en-func-words.txt", 'r').readlines() if len(nltk.word_tokenize(word)) == 1])))
 	punctuations = [',','.','?','!',':',';','\'','\"']
 	specialcharacters = ['~' , '@', '#', '$', '%', '^', '&', '*', '-', '_', '=' ,'+', '>', '<', '[', ']', '{', '}', '/', '\\', '|', '(', ')']
 	alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
@@ -143,7 +142,7 @@ def from_corpus(path):
 		func_freq = [alnum_tokenized_lower.count(fw)/num_allwords for fw in funcwords] # Count the function words in the text
 		punc_freq = [bodytext.count(p)/allchars for p in punctuations] # Count the punctuations in the text relative to overall number of characters
 
-		temp_dataset += punc_freq+func_freq+tag_freq
+		temp_dataset += punc_freq+func_freq+[sum(func_freq)]+tag_freq
 
 		# Structural features
 		sents_no = len(bodyt.find_all('s'))
