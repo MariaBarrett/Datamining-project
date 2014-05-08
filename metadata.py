@@ -25,9 +25,9 @@ def build_hist_box(data):
 # sort files
 
 def split_authors(data, threshold=3):
-	''' strips authors with less than 3 articles. Split remaining article
+	''' strips authors with less than threshold articles. Split remaining article
 	ID's into train and test sets, ensuring each author is represented
-	with at least 1 article in train and exactly 1 in test.
+	with at least threshold-1 article in train and exactly 1 in test.
 	Returns list of documents ID's (did) as lists '''
 
 
