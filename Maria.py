@@ -37,6 +37,10 @@ def from_corpus(path):
 		opened = open(xmlfile, 'r')	
 		currentfile = BeautifulSoup(opened, 'xml')
 		
+		#Document ID is first value in both meta and dataset list
+		temp_dataset.append(currentfile.find(True, {'id': True})['id'][1:])
+		temp_metadata.append(currentfile.find(True, {'id': True})['id'][1:])
+
 		metafeat = currentfile.find('sourceDesc').find_all('p')
 		for feat in metafeat:
 			temp_metadata.append (feat.contents[0])
@@ -150,7 +154,11 @@ def from_corpus(path):
 		temp_dataset.append(sents_no / paragraphs_no) # number of sentences per paragraph
 		temp_dataset.append(allchars / paragraphs_no) # number of characters per paragraph
 		temp_dataset.append(num_allwords / paragraphs_no) # number of words per paragraph
+		blockquotes = len(bodyt.find_all('quote')) #number of block quotes
 
+		print len(temp_dataset)
+
+		#Appending to array
 		dataset.append(temp_dataset)
 		metadata.append(temp_metadata)
 

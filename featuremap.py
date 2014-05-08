@@ -48,12 +48,12 @@ featuremap = ['LEX_num_characters', 'LEX_frac_alphabetic', 'LEX_fraq_upper', 'LE
 'SYN_freq_when', 'SYN_freq_whenever', 'SYN_freq_where', 'SYN_freq_whereas', 'SYN_freq_wherever', 'SYN_freq_whether', 'SYN_freq_which', 
 'SYN_freq_whichever', 'SYN_freq_whichever', 'SYN_freq_while', 'SYN_freq_whilst', 'SYN_freq_who', 'SYN_freq_whoever', 'SYN_freq_whom', 
 'SYN_freq_whomever', 'SYN_freq_whose', 'SYN_freq_will', 'SYN_freq_with', 'SYN_freq_within', 'SYN_freq_without', 'SYN_freq_would', 
-'SYN_freq_yet', 'SYN_freq_you', 'SYN_freq_your', 'SYN_freq_yours', 'SYN_freq_yourself', 'SYN_freq_yourselves', 
-'STRUC_num_sent','STRUC_num_parag', 'STRUC_av_sent_per_para', 'STRUC_av_char_per_para', 'STRUC_av_word_per_para', 'STRUC_num_blockquotes']
+'SYN_freq_yet', 'SYN_freq_you', 'SYN_freq_your', 'SYN_freq_yours', 'SYN_freq_yourself', 'SYN_freq_yourselves', 'SYN_freq_POS_.', 
+'SYN_freq_POS_ADJ', 'SYN_freq_POS_ADP', 'SYN_freq_POS_ADV', 'SYN_freq_POS_CONJ', 'SYN_freq_POS_DET', 'SYN_freq_POS_NOUN', 
+'SYN_freq_POS_NUM', 'SYN_freq_POS_PRON', 'SYN_freq_POS_PRT', 'SYN_freq_POS_VERB', 'SYN_freq_POS_X', 'STRUC_num_sent', 
+'STRUC_num_parag', 'STRUC_av_sent_per_para', 'STRUC_av_char_per_para', 'STRUC_av_word_per_para', 'STRUC_num_blockquotes', ]
 
 
-blockquotes = len(bodyt.find_all('quote')) #number of block quotes
+print len(featuremap)
 
-
-		temp_dataset.append(currentfile.find(True, {'id': True})['id'][1:])
-		temp_metadata.append(currentfile.find(True, {'id': True})['id'][1:])
+		
