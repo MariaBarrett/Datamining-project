@@ -1,5 +1,4 @@
-featuremap = ['doc_id',
-
+featuremap = [
 
 'LEX_num_characters', 'LEX_frac_alphabetic', 'LEX_fraq_upper', 'LEX_fraqdigit', 'LEX_fraq_whitesp', 'LEX_fraq_a', 
 'LEX_fraq_b', 'LEX_fraq_c', 'LEX_fraq_d', 'LEX_fraq_e', 'LEX_fraq_f','LEX_fraq_g', 'LEX_fraq_h', 'LEX_fraq_i', 'LEX_fraq_j', 
