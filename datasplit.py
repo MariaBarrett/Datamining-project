@@ -14,7 +14,7 @@ data = pickle.load( open( "dataset.p", "rb" ) )
 def natlan(metadata, data):
 
 	random.seed(448)
-	labels = np.array(['English' if l == 'English' else 'Non-english' for l in metadata[:,-4]])
+	labels = np.array([1 if l == 'English' else 0 for l in metadata[:,-4]]) # 1 = Native (English), 0 = Non-native
 	zipped = zip(labels,data)
 	random.shuffle(zipped)
 	split = int(len(zipped)*0.80)
@@ -22,4 +22,4 @@ def natlan(metadata, data):
 
 	return train, test
 
-
+natlan_train, natlan_test = natlan(metadata,data)
