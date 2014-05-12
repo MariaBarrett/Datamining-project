@@ -14,7 +14,8 @@ import featuremap #our own feature map of all the features
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
 
 """
-This function expects a path to the corpus files and extracts metadata, person features, lexical features
+This function expects a path to the corpus files and extracts metadata and dataset 
+Each dataset feature is described when it's appended
 """
 def from_corpus(path):
 	dataset = []
@@ -25,9 +26,10 @@ def from_corpus(path):
 	punctuations = [',','.','?','!',':',';','\'','\"']
 	specialcharacters = ['~' , '@', '#', '$', '%', '^', '&', '*', '-', '_', '=' ,'+', '>', '<', '[', ']', '{', '}', '/', '\\', '|', '(', ')']
 	alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-
-	for xmlfile in path[:2]:
-		
+	count = 1
+	for xmlfile in path:
+		print count
+		count +=1
 		temp_dataset = []
 		temp_metadata = []
 

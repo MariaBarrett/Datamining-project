@@ -11,17 +11,19 @@ filename = 'BAWE.xls'
 data = pd.read_excel(filepath+filename, 'Sheet1')
 
 
-def build_hist_box(data):
+def build_hist_box(data, group='disciplinary group'):
 	columns = ['words','s-units','p-units']
 
-	data.groupby(['disciplinary group'])[columns].describe()
+	data.groupby([group])[columns].describe()
 
 	for g in columns:
-		data[g].hist(by=data['disciplinary group'])
+		data[g].hist(by=data[group])
 		plt.suptitle(g)
-		data.boxplot(column=g, by='disciplinary group')
+		data.boxplot(column=g, by=group)
 
 	plt.show()
+
+build_hist_box(data, group='grade')
 
 # sort files
 
