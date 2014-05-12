@@ -10,6 +10,7 @@ import math
 import scipy
 import pickle
 import featuremap #our own feature map of all the features
+import unicodedata
 
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
 
@@ -157,10 +158,13 @@ def from_corpus(path):
 		dataset.append(temp_dataset)
 		metadata.append(temp_metadata)
 
-
+	for datapoint in metadata:
+		for i in xrange(len(datapoint)):
+			datapoint[i]= unicodedata.normalize('NFKD', datapoint[i]).encode('utf-8','ignore')
 	return np.array(metadata), np.array(dataset)
-
+	
 metadata, dataset = from_corpus(corpuspath)
+
 pickle.dump(metadata, open( "metadata.p", "wb" ) )
 pickle.dump(dataset, open( "dataset.p", "wb" ) )
 

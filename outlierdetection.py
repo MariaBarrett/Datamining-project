@@ -39,26 +39,31 @@ def get_featurenumber(feature, list='featuremap.featuremap'):
 """
 This function removes datapoints if a feature of a certain index has a value that is either min, max or equal to a specified value. 
 To activate either minval, maxval or equal, e.g. write minval=1 and it will clean all datapoints in both metadata and dataset with values above 1.0 at the specified index 
+c counts how many datapoints have been deleted in each set. 
 """
+
 def clean_from_meta(metadata, dataset, index, minval=None, maxval=None, equal=None):
+	c=0
 	for i in xrange(len(metadata)): #for every datapoint
 		if minval:
-			print "minval"
 			if metadata[i][index] < float(minval):
+				c+=1
 				metadata = np.delete(metadata, i, axis=0)  
 				dataset = np.delete(dataset, i, axis=0)  
 		if maxval:
-			print "maxval"
 			if metadata[i][index] > float(maxval):
+				c+=1
 				metadata = np.delete(metadata, i, axis=0)  
 				dataset = np.delete(dataset, i, axis=0)  
 		if equal:
 			if metadata[i][index] == float(equal):
+				c+=1
 				metadata = np.delete(metadata, i, axis=0)  
 				dataset = np.delete(dataset, i, axis=0)  
-	return metadata, dataset
+	print "For index %s, %s datapoint(s) were deleted in each dataset" %(index, c)
+	return metadata, dataset, c
 
-newmeta, newdata = clean_from_meta(meta, dataset, 1, equal=2)
+newmeta, newdata, deleted = clean_from_meta(meta, dataset, 1, equal=2)
 
 print newmeta, newdata
 #number of authors > 1
