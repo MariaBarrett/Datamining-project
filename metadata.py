@@ -53,6 +53,10 @@ def split_authors(data, threshold=3):
 				train_id.append(sid)
 	return train, test, train_id, test_id
 
+tr, te, tid, teid = split_authors(data, 9)
+
+print len(te)
+
 def load_corpus_txt(did):
 	''' Takes a list of document id's (did) (for example from 
 	split_authors()) and loads the content of the corrosponding txt

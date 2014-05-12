@@ -9,6 +9,7 @@ from collections import Counter
 import math
 import scipy
 import featuremap #our own feature map of all the features
+import unicodedata
 
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
 
@@ -35,8 +36,7 @@ def from_corpus(path):
 		opened = open(xmlfile, 'r')	
 		currentfile = BeautifulSoup(opened, 'xml')
 		
-		#Document ID is first value in both meta and dataset list
-		temp_dataset.append(currentfile.find(True, {'id': True})['id'][1:])
+		#Document ID is first value in meta list
 		temp_metadata.append(currentfile.find(True, {'id': True})['id'][1:])
 
 		metafeat = currentfile.find('sourceDesc').find_all('p')
@@ -52,7 +52,7 @@ def from_corpus(path):
 
 		#Lexical features
 		allchars = len(bodytext)
-		temp_dataset.append(allchars) #Lex: total characters
+		temp_dataset.append(float(allchars)) #Lex: total characters
 		upper = sum(x.isupper() for x in bodytext)
 		lower = sum(x.islower() for x in bodytext)
 		temp_dataset.append((lower+upper) / allchars) #Lex: total number of letters-characters
@@ -158,8 +158,7 @@ def from_corpus(path):
 		metadata.append(temp_metadata)
 
 	return metadata, dataset
-	#np.asarray(dataset)
 
-a = from_corpus(corpuspath)
+meta, dataset = from_corpus(corpuspath)
 
 
