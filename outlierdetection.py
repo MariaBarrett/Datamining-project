@@ -65,10 +65,16 @@ print newmeta, newdata
 
 """
 This function count number of different target groups
-It expects the metadata arrays
-
-
-def countgroups(metadata):
-	for datapoint in metadata:
-
+It expects the metadata arrays and the dataset and name of the desired metadata feature name
 """
+def countgroups(metadata, featurename):
+	index = get_featurenumber(featurename, featuremap.metadata)
+	different_values={}
+	for datapoint in metadata:
+		if datapoint[i] in different_values:
+			different_values[datapoint[i]] +=1
+		else: 
+			different_values[datapoint] = 1
+	return different_values
+
+

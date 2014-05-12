@@ -55,6 +55,18 @@ featuremap = [
 'SYN_freq_POS_NUM', 'SYN_freq_POS_PRON', 'SYN_freq_POS_PRT', 'SYN_freq_POS_VERB', 'SYN_freq_POS_X', 
 
 'STRUC_num_sent', 
-'STRUC_num_parag', 'STRUC_av_sent_per_para', 'STRUC_av_char_per_para', 'STRUC_av_word_per_para', 'STRUC_num_blockquotes', ]
+'STRUC_num_parag', 'STRUC_av_sent_per_para', 'STRUC_av_char_per_para', 'STRUC_av_word_per_para', 'STRUC_num_blockquotes']
+
+
+
+metadatamap = [ 
+'documentid', "level", "date", "module title", "module code", "genre family", "discipline", "disciplinary group", 
+"grade", "number of authors", "number of words", "number of s-units", "number of p", "number of tables", "number of figures", 
+"number of block quotes", "number of formulae", "number of lists", "number of paragraphs formatted like lists", 
+"abstract present", "average words per s-unit", "average s-units per", "macrotype of assignment", 
+
+
+"year of birth", "first language", "education", "course", "student ID"
+]
 
 		
