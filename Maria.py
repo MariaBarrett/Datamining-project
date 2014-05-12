@@ -9,7 +9,6 @@ from collections import Counter
 import math
 import scipy
 import featuremap #our own feature map of all the features
-import unicodedata
 
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
 
@@ -156,6 +155,7 @@ def from_corpus(path):
 		#Appending to array
 		dataset.append(temp_dataset)
 		metadata.append(temp_metadata)
+
 
 	return metadata, dataset
 
