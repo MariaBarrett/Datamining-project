@@ -8,6 +8,7 @@ import re
 from collections import Counter
 import math
 import scipy
+import pickle
 import featuremap #our own feature map of all the features
 
 corpuspath = glob.glob('2539/CORPUS_UTF-8/*.xml')
@@ -26,9 +27,7 @@ def from_corpus(path):
 	alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 
 	for xmlfile in path[:2]:
-		#Assigning same id to metadata and dataset arrays
 		
-		#append document id to both lists 
 		temp_dataset = []
 		temp_metadata = []
 
@@ -157,8 +156,9 @@ def from_corpus(path):
 		metadata.append(temp_metadata)
 
 
-	return metadata, dataset
+	return np.array(metadata), np.array(dataset)
 
-meta, dataset = from_corpus(corpuspath)
-
+metadata, dataset = from_corpus(corpuspath)
+pickle.dump(metadata, open( "metadata.p", "wb" ) )
+pickle.dump(dataset, open( "dataset.p", "wb" ) )
 
