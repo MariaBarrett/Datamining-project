@@ -3,6 +3,7 @@ import numpy as np
 import featuremap
 from featuremap import featuremap, metadatamap
 from collections import Counter
+import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
 meta = pickle.load( open( "metadata.p", "rb" ) )
@@ -16,21 +17,14 @@ def normalize(traindata,testdata):
 	mean = np.mean(traindata, axis=0)
 	std = np.std(traindata, axis=0)
 
-	# Remove features with standard deviation = 0, as they are not interesting
-	zero_feat = np.where(std==0)[0]
-
-	if len(zero_feat) > 0:
-		traindata = np.delete(traindata, zero_feat, 1)
-		mean = np.delete(mean, zero_feat)
-		std = np.delete(std, zero_feat)
-		#if testdata != None:
-		testdata = np.delete(testdata, zero_feat, 1)
-
-	# Normalize data
 	traindata_normalized = np.copy((traindata-mean)/std)
-	
-	#if testdata != None:
 	testdata_normalized = np.copy((testdata-mean)/std)
+
+	train_nan = np.isnan(traindata_normalized)
+	test_nan = np.isnan(testdata_normalized)
+
+	traindata_normalized[train_nan] = 0
+	testdata_normalized[test_nan] = 0
 
 	return traindata_normalized, testdata_normalized
 

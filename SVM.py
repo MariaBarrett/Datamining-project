@@ -28,20 +28,20 @@ LEtrain_Xn, LEtest_Xn = clean.normalize(LEtrain_X, LEtest_X)
 AUtrain_Xn, AUtest_Xn = clean.normalize(AUtrain_X, AUtest_X)
 
 #Calling PCA functions
-clean.princomp(NLtrain_pca)
-NLtrain_pca, NLtest_pca = clean.princomp_transform(NLtrain_Xn, NLtest_Xn, 100)
-clean.princomp(GRtrain_pca)
-GRtrain_pca, GRtest_pca = clean.princomp_transform(GRtrain_Xn, GRtest_Xn, 100)
-clean.princomp(GRtrain_pca)
-LEtrain_pca, LEtest_pca = clean.princomp_transform(LEtrain_Xn, LEtest_Xn, 100)
-clean.princomp(GRtrain_pca)
-AUtrain_pca, AUtest_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 100)
+clean.princomp(NLtrain_Xn)
+NLtrain_Xn_pca, NLtest_Xn_pca = clean.princomp_transform(NLtrain_Xn, NLtest_Xn, 100)
+clean.princomp(GRtrain_Xn)
+GRtrain_Xn_pca, GRtest_Xn_pca = clean.princomp_transform(GRtrain_Xn, GRtest_Xn, 100)
+clean.princomp(GRtrain_Xn)
+LEtrain_Xn_pca, LEtest_Xn_pca = clean.princomp_transform(LEtrain_Xn, LEtest_Xn, 100)
+clean.princomp(GRtrain_Xn)
+AUtrain_Xn_pca, AUtest_Xn_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 100)
 
 
 #----------------------------------------------------------------------------------------
 #SVM
 #----------------------------------------------------------------------------------------
-
+"""
 
 parameters = {'C':[0.0001, 0.001, 0.1 ,1, 3, 5, 7, 11, 13 ], 'gamma':[0.00001, 0.0001, 0.001, 0.01, 0.1, 1,]}
 svr = svm.SVC()
@@ -60,3 +60,4 @@ print ""
 y_true, y_pred = y_test, clf.predict(X_test)
 print classification_report(y_true, y_pred)
 print ""
+"""
