@@ -28,8 +28,14 @@ LEtrain_Xn, LEtest_Xn = clean.normalize(LEtrain_X, LEtest_X)
 AUtrain_Xn, AUtest_Xn = clean.normalize(AUtrain_X, AUtest_X)
 
 #Calling PCA functions
-clean.princomp(X_train)
-X_train_PCA, X_test_PCA = clean.princomp_transform(X_train, X_test, 100)
+clean.princomp(NLtrain_pca)
+NLtrain_pca, NLtest_pca = clean.princomp_transform(NLtrain_Xn, NLtest_Xn, 100)
+clean.princomp(GRtrain_pca)
+GRtrain_pca, GRtest_pca = clean.princomp_transform(GRtrain_Xn, GRtest_Xn, 100)
+clean.princomp(GRtrain_pca)
+LEtrain_pca, LEtest_pca = clean.princomp_transform(LEtrain_Xn, LEtest_Xn, 100)
+clean.princomp(GRtrain_pca)
+AUtrain_pca, AUtest_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 100)
 
 #----------------------------------------------------------------------------------------
 #SVM
