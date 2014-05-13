@@ -81,4 +81,4 @@ def author(metadata, data, min_text, no_authors):
 NLtrain_y, NLtrain_X, NLtest_y, NLtest_X = natlan(metadata,data)
 GRtrain_y, GRtrain_X, GRtest_y, GRtest_X = grade(metadata,data)
 LEtrain_y, LEtrain_X, LEtest_y, LEtest_X = level(metadata,data)
-AUtrain_y, AUtrain_X, AUtest_y, AUtest_X = author(metadata,data,4,10)
+AUtrain_y, AUtrain_X, AUtest_y, AUtest_X = author(metadata,data,4,3)
