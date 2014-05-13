@@ -1,13 +1,12 @@
 from __future__ import division
 from collections import Counter
-from featuremap import featuremap, metadatamap
+from featuremap import featuremap, metadatamap, LEX_featureset, WB_featureset, SYN_featureset, STRUC_featureset
 import datasplit
 import clean
 import pickle
 import matplotlib.pyplot as plt
 from sklearn import svm, grid_search
 import numpy as np
-from sklearn.decomposition import PCA
 from sklearn.neighbors import KNeighborsClassifier
 
 from sklearn.grid_search import GridSearchCV
@@ -18,49 +17,17 @@ y_test, X_test = datasplit.GRtest_y, datasplit.GRtest_X
 
 X_train, X_test = clean.normalize(X_train, X_test)
 
-#----------------------------------------------------------------------------------------
-#PCA
-#----------------------------------------------------------------------------------------
-
-def princomp(train):
-	print "#" * 45
-	print "PCA"
-	print "#" * 45
-	pca = PCA(copy=True)
-	transformed = pca.fit_transform(train)
-	components = pca.components_
-	exp_variance = pca.explained_variance_ratio_
-
-	x = np.array([i for i in range(len(exp_variance))])
-
-	#print "Explained variance", exp_variance
-	M = (train-np.mean(train.T,axis=1)).T # subtract the mean (along columns)
- 	eigv, eigw = np.linalg.eig(np.cov(M)) 
-	plt.plot(x, exp_variance)
-	plt.title("Explained Variance")
-	plt.ylabel("Exp. variance")
-	plt.xlabel("Components")
-	plt.show()
-
-def princomp_transform(trainset, testset, components):
-	#print trainset[0]
-	pca = PCA(n_components=components, copy=True, whiten=False)
-	pca.fit(trainset)
-	X_train_trans = pca.transform(trainset)
-	X_test_trans = pca.transform(testset)
-	#orig = pca.inverse_transform(X_train_trans)
-	#print orig[0]
-	print "PCA transformation done"
-	return X_train_trans, X_test_trans
-
-princomp(X_train)
-X_train_PCA, X_test_PCA = princomp_transform(X_train, X_test, 100)
+#Calling PCA functions
+clean.princomp(X_train)
+X_train_PCA, X_test_PCA = clean.princomp_transform(X_train, X_test, 100)
 
 #----------------------------------------------------------------------------------------
 #KNN
 #----------------------------------------------------------------------------------------
 neigh = KNeighborsClassifier(n_neighbors=3)
 neigh.fit(X_train, y_train)
+
+
 
 
 #----------------------------------------------------------------------------------------
@@ -86,7 +53,7 @@ scores = ['precision', 'recall']
 
 for score in scores:
 
-    clf = GridSearchCV(svm.SVC(), parameters, cv=5, scoring=score)
+    clf = GridSearchCV(svm.SVC(C=1), parameters, cv=5, scoring=score)
     clf.fit(X_train, y_train)
 
     print "Best parameters set found on development set:"

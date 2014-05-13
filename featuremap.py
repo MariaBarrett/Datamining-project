@@ -63,10 +63,24 @@ metadatamap = [
 'documentid', "level", "date", "module title", "module code", "genre family", "discipline", "disciplinary group", 
 "grade", "number of authors", "number of words", "number of s-units", "number of p", "number of tables", "number of figures", 
 "number of block quotes", "number of formulae", "number of lists", "number of paragraphs formatted like lists", 
-"abstract present", "average words per s-unit", "average s-units per", "macrotype of assignment", 
-
-
-"year of birth", "first language", "education", "course", "student ID"
+"abstract present", "average words per s-unit", "average s-units per", "macrotype of assignment", "year of birth", "first language", "education", "course", "student ID"
 ]
+
+LEX_featureset = []
+WB_featurset = []
+SYN_featureset = []
+STRUC_featureset = []
+
+for feature in featuremap:
+	if 'LEX' in feature:
+		LEX_featureset.append(feature)
+	elif 'WB' in feature:
+		WB_featurset.append(feature)
+	elif 'SYN' in feature:
+		SYN_featureset.append(feature) 
+	elif 'STRUC' in feature:
+		STRUC_featureset.append(feature)
+	else:
+		print "I didn't get a class: ", feature
 
 		

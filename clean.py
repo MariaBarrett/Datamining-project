@@ -3,6 +3,7 @@ import numpy as np
 import featuremap
 from featuremap import featuremap, metadatamap
 from collections import Counter
+from sklearn.decomposition import PCA
 
 meta = pickle.load( open( "metadata.p", "rb" ) )
 data = pickle.load( open( "dataset.p", "rb" ) )
@@ -80,8 +81,44 @@ def outlierdetection(dataset, metadata, numberofstdev):
 
 #outlierdetection(data, meta, 5)
 
-
 #i = featuremap.index('WB_num_words')
+
+#----------------------------------------------------------------------------------------
+#PCA
+#----------------------------------------------------------------------------------------
+
+def princomp(train):
+	print "#" * 45
+	print "PCA"
+	print "#" * 45
+	pca = PCA(copy=True)
+	transformed = pca.fit_transform(train)
+	components = pca.components_
+	exp_variance = pca.explained_variance_ratio_
+
+	x = np.array([i for i in range(len(exp_variance))])
+
+	#print "Explained variance", exp_variance
+	M = (train-np.mean(train.T,axis=1)).T # subtract the mean (along columns)
+ 	eigv, eigw = np.linalg.eig(np.cov(M)) 
+	plt.plot(x, exp_variance)
+	plt.title("Explained Variance")
+	plt.ylabel("Exp. variance")
+	plt.xlabel("Components")
+	plt.show()
+
+def princomp_transform(trainset, testset, components):
+	#print trainset[0]
+	pca = PCA(n_components=components, copy=True, whiten=False)
+	pca.fit(trainset)
+	X_train_trans = pca.transform(trainset)
+	X_test_trans = pca.transform(testset)
+	#orig = pca.inverse_transform(X_train_trans)
+	#print orig[0]
+	print "PCA transformation done"
+	return X_train_trans, X_test_trans
+
+
 
 """
 This function returns True if the passed parameter is an integer
