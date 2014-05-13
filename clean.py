@@ -7,7 +7,7 @@ from collections import Counter
 meta = pickle.load( open( "metadata.p", "rb" ) )
 data = pickle.load( open( "dataset.p", "rb" ) )
 
-def normalize(traindata,testdata=False):
+def normalize(traindata,testdata):
 	"""This function normalizes a dataset. It is possible to include
 	a test dataset to be normalized with the mean and std calculated from
 	the training dataset."""
@@ -22,18 +22,18 @@ def normalize(traindata,testdata=False):
 		traindata = np.delete(traindata, zero_feat, 1)
 		mean = np.delete(mean, zero_feat)
 		std = np.delete(std, zero_feat)
-		if testdata != False:
-			testdata = np.delete(testdata, zero_feat, 1)
+		#if testdata != None:
+		testdata = np.delete(testdata, zero_feat, 1)
 
 	# Normalize data
 	traindata_normalized = np.copy((traindata-mean)/std)
 	
-	if testdata != False:
-			testdata_normalized = np.copy((testdata-mean)/std)
+	#if testdata != None:
+	testdata_normalized = np.copy((testdata-mean)/std)
 
-			return traindata_normalized, testdata_normalized
+	return traindata_normalized, testdata_normalized
 
-	return traindata_normalized
+	#return traindata_normalized
 
 def lasses(labels,data,print_l=False):
 	"""This function calculates an Lasse's K for feature selection. The
