@@ -111,3 +111,75 @@ def author(metadata, data, min_text, no_authors, in_test=1):
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 
+"""
+Select a featureset and ignore all the other features: 'LEX' for lexical features, 'WB' for word-based features, 'SYN' for syntactic features, 'STRUC' for structural features. 
+It returns a new train and test set consisting only of the selected features
+"""
+def select_featureset(trainset, testset, featureset):
+	trainset = np.copy(trainset)
+	testset = np.copy(testset)
+
+	#Indices for the different features
+	LEX_start = 0
+	LEX_end = featuremap.index('LEX_frac_)')
+
+	WB_start = featuremap.index('WB_num_words')
+	WB_end = featuremap.index('WB_frac_word_len20')
+
+	SYN_start = featuremap.index('SYN_frac_,')
+	SYN_end = featuremap.index('SYN_frac_POS_X')
+
+	STRUC_start = featuremap.index('STRUC_num_sent')
+	STRUC_end = len(featuremap)
+
+	if featureset == 'LEX':
+		train_LEX = trainset[LEX_start:LEX_end+1,:]
+		test_LEX = testset[LEX_start:LEX_end+1,:]
+
+		return train_LEX, test_LEX
+
+	elif featureset == 'WB':
+		train_WB = trainset[WB_start:WB_end+1,:]
+		test_WB = testset[WB_start:WB_end+1,:]
+
+		return train_WB, test_WB
+
+	elif featureset == 'SYN':
+		train_SYN = trainset[SYN_start:SYN_end+1,:]
+		test_SYN = testset[SYN_start:SYN_end+1,:]
+
+		return train_SYN, test_SYN
+
+	elif featureset == 'STRUC':
+		train_STRUC = trainset[STRUC_start:STRUC_end+1,:]
+		test_STRUC = testset[STRUC_start:STRUC_end+1,:]
+
+		return train_STRUC, test_STRUC
+
+	else:
+		print 'Unknown featureset'
+
+def sub(subset):
+	LEX_start = 0
+	LEX_end = featuremap.index('LEX_frac_)')
+
+	WB_start = featuremap.index('WB_num_words')
+	WB_end = featuremap.index('WB_frac_word_len20')
+
+	SYN_start = featuremap.index('SYN_frac_,')
+	SYN_end = featuremap.index('SYN_frac_POS_X')
+
+	STRUC_start = featuremap.index('STRUC_num_sent')
+	STRUC_end = len(featuremap)
+
+	if subset == 'LEX':
+		return np.arange(LEX_start, LEX_end+1)
+
+	elif subset == 'WB':
+		return np.arange(WB_start, WB_end+1)
+	elif subset == 'SYN':
+		return np.arange(SYN_start, SYN_end+1)
+	elif subset == 'STRUC':
+		return np.arange(STRUC_start, STRUC_end)
+	else:
+		print "Unknown featureset"

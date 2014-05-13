@@ -37,6 +37,7 @@ LEtrain_pca, LEtest_pca = clean.princomp_transform(LEtrain_Xn, LEtest_Xn, 100)
 clean.princomp(GRtrain_pca)
 AUtrain_pca, AUtest_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 100)
 
+
 #----------------------------------------------------------------------------------------
 #SVM
 #----------------------------------------------------------------------------------------
