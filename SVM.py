@@ -1,6 +1,6 @@
 from __future__ import division
 from collections import Counter
-from featuremap import featuremap, metadatamap, LEX_featureset, WB_featureset, SYN_featureset, STRUC_featureset
+from featuremap import featuremap, metadatamap
 import datasplit
 import clean
 import pickle
@@ -36,6 +36,13 @@ clean.princomp(GRtrain_pca)
 LEtrain_pca, LEtest_pca = clean.princomp_transform(LEtrain_Xn, LEtest_Xn, 100)
 clean.princomp(GRtrain_pca)
 AUtrain_pca, AUtest_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 100)
+
+
+def datasets_for_subfeaturesets(trainset, testset):
+	subsets = ['LEX', 'WB', 'SYN', 'STRUC']
+	for subsetname in subsets:
+		print subsetname
+		subtrain, subtest = datasplit.selectfeatureset(trainset, testset, subsetname)
 
 #----------------------------------------------------------------------------------------
 #SVM

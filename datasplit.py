@@ -159,3 +159,27 @@ def select_featureset(trainset, testset, featureset):
 	else:
 		print 'Unknown featureset'
 
+def sub(subset):
+	LEX_start = 0
+	LEX_end = featuremap.index('LEX_frac_)')
+
+	WB_start = featuremap.index('WB_num_words')
+	WB_end = featuremap.index('WB_frac_word_len20')
+
+	SYN_start = featuremap.index('SYN_frac_,')
+	SYN_end = featuremap.index('SYN_frac_POS_X')
+
+	STRUC_start = featuremap.index('STRUC_num_sent')
+	STRUC_end = len(featuremap)
+
+	if subset == 'LEX':
+		return np.arange(LEX_start, LEX_end+1)
+
+	elif subset == 'WB':
+		return np.arange(WB_start, WB_end+1)
+	elif subset == 'SYN':
+		return np.arange(SYN_start, SYN_end+1)
+	elif subset == 'STRUC':
+		return np.arange(STRUC_start, STRUC_end+1)
+	else:
+		print "Unknown featureset"
