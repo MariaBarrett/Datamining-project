@@ -7,10 +7,7 @@ import matplotlib.pyplot as plt
 from sklearn import svm, grid_search
 import numpy as np
 
-metadata = pickle.load( open( "metadata.p", "rb" ) )
-data = pickle.load( open( "dataset.p", "rb" ) )
-plusone = np.where(metadata[:,9] != "1")[0] # Get indexes for all texts written by more than one person
-data, metadata = np.delete(data, plusone, 0), np.delete(metadata, plusone, 0) # Remove all texts written by more than one person from data
+
 
 def natlan(metadata, data):
 
@@ -114,7 +111,3 @@ def author(metadata, data, min_text, no_authors, in_test=1):
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 
-NLtrain_y, NLtrain_X, NLtest_y, NLtest_X = natlan(metadata,data)
-GRtrain_y, GRtrain_X, GRtest_y, GRtest_X = grade(metadata,data)
-LEtrain_y, LEtrain_X, LEtest_y, LEtest_X = level(metadata,data)
-AUtrain_y, AUtrain_X, AUtest_y, AUtest_X = author(metadata,data,4,3,2)
