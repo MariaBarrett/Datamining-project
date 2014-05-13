@@ -1,6 +1,6 @@
 from __future__ import division
 from collections import Counter
-from featuremap import featuremap, metadatamap, LEX_featureset, WB_featureset, SYN_featureset, STRUC_featureset
+from featuremap import featuremap, metadatamap
 import datasplit
 import clean
 import pickle
