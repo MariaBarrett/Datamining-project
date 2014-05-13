@@ -38,12 +38,6 @@ clean.princomp(GRtrain_pca)
 AUtrain_pca, AUtest_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 100)
 
 
-def datasets_for_subfeaturesets(trainset, testset):
-	subsets = ['LEX', 'WB', 'SYN', 'STRUC']
-	for subsetname in subsets:
-		print subsetname
-		subtrain, subtest = datasplit.selectfeatureset(trainset, testset, subsetname)
-
 #----------------------------------------------------------------------------------------
 #SVM
 #----------------------------------------------------------------------------------------

@@ -180,6 +180,6 @@ def sub(subset):
 	elif subset == 'SYN':
 		return np.arange(SYN_start, SYN_end+1)
 	elif subset == 'STRUC':
-		return np.arange(STRUC_start, STRUC_end+1)
+		return np.arange(STRUC_start, STRUC_end)
 	else:
 		print "Unknown featureset"
