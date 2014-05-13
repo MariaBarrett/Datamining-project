@@ -9,9 +9,6 @@ meta = np.array([[2,3],[2,3],[3,2]])
 mean = np.mean(dataset, axis=0)
 stdev = np.std(dataset, axis=0)
 
-print mean
-print stdev
-
 """
 This function takes a dataset and a max acceptec number of standard deviations.
 If it finds a value that is further away from the mean than numberofstdev standard deviations, 
@@ -65,7 +62,6 @@ def clean_from_meta(metadata, dataset, index, minval=None, maxval=None, equal=No
 
 newmeta, newdata, deleted = clean_from_meta(meta, dataset, 1, equal=2)
 
-print newmeta, newdata
 #number of authors > 1
 
 """
