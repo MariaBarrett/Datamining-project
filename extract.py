@@ -152,7 +152,7 @@ def from_corpus(path):
 		temp_dataset.append(sents_no / paragraphs_no) # number of sentences per paragraph
 		temp_dataset.append(allchars / paragraphs_no) # number of characters per paragraph
 		temp_dataset.append(num_allwords / paragraphs_no) # number of words per paragraph
-		temp.append(len(bodyt.find_all('quote'))) #number of block quotes
+		temp_dataset.append(len(bodyt.find_all('quote'))) #number of block quotes
 
 		#Appending to array
 		dataset.append(temp_dataset)
