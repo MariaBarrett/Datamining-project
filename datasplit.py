@@ -21,6 +21,17 @@ def natlan(metadata, data):
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
 
+	print "Native Language" 
+	print "distribution in train set"
+	counted = Counter(train[0])
+
+	print "Native Language: English", counted[1]
+	print "Native Language: Not English", counted[0]
+	print ""
+	print "Train set size ", len(train[0])
+	print "Test set size ", len(test[0])
+	print "-" *45
+
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 def grade(metadata, data):
@@ -35,6 +46,17 @@ def grade(metadata, data):
 	random.shuffle(zipped)
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
+
+	print "Grade" 
+	print "Distribution in train set"
+	counted = Counter(train[0])
+
+	print "Grade: D", counted[0]
+	print "Grade: M", counted[1]
+	print ""
+	print "Train set size ", len(train[0])
+	print "Test set size ", len(test[0])
+	print "-" *45
 
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
@@ -51,6 +73,20 @@ def level(metadata, data):
 	random.shuffle(zipped)
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
+
+	print "Grade" 
+	print "Distribution in train set"
+	counted = Counter(train[0])
+
+	print "Level 1", counted[1]
+	print "Level 2", counted[2]
+	print "Level 3", counted[3]
+	print "Level 4", counted[4]
+
+	print ""
+	print "Train set size ", len(train[0])
+	print "Test set size ", len(test[0])
+	print "-" *45
 
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 

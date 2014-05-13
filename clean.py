@@ -78,7 +78,7 @@ def outlierdetection(dataset, metadata, numberofstdev):
 				if dataset[j][i] < (mean - (stdev*numberofstdev)) or dataset[j][i] > (mean + (stdev*numberofstdev)):
 					print "Feature: %s Mean: %.4f(%.4f), Value: %.4f , document id: %s" %(featuremap[i], mean, stdev,  dataset[j][i], metadata[j][0])
 
-outlierdetection(data, meta, 5)
+#outlierdetection(data, meta, 5)
 
 
 #i = featuremap.index('WB_num_words')
