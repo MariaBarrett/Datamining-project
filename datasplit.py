@@ -54,7 +54,7 @@ def level(metadata, data):
 
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
-def author(metadata, data, min_text, no_authors):
+def author(metadata, data, min_text, no_authors, in_test=1):
 
 	random.seed(448)
 	author_count = Counter(metadata[:,-1])
@@ -70,7 +70,7 @@ def author(metadata, data, min_text, no_authors):
 	labels = np.array([int(metadata_clean[:,-1][i]) for i in mf_index])
 	data_reduced = np.array([data_clean[i] for i in mf_index])
 
-	test_index = np.array([random.choice(np.where(labels==l)[0]) for l in set(labels)])
+	test_index = np.array([i for l in set(labels) for i in random.sample(np.where(labels==l)[0],in_test)])
 	zipped = zip(labels,data_reduced)
 	test = zip(*[zipped[ti] for ti in test_index])
 	train = zip(*[i for j, i in enumerate(zipped) if j not in test_index])
@@ -81,4 +81,4 @@ def author(metadata, data, min_text, no_authors):
 NLtrain_y, NLtrain_X, NLtest_y, NLtest_X = natlan(metadata,data)
 GRtrain_y, GRtrain_X, GRtest_y, GRtest_X = grade(metadata,data)
 LEtrain_y, LEtrain_X, LEtest_y, LEtest_X = level(metadata,data)
-AUtrain_y, AUtrain_X, AUtest_y, AUtest_X = author(metadata,data,4,3)
+AUtrain_y, AUtrain_X, AUtest_y, AUtest_X = author(metadata,data,4,3,2)
