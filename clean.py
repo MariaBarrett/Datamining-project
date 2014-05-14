@@ -112,8 +112,6 @@ def princomp_transform(trainset, testset, components):
 	print "PCA transformation done"
 	return X_train_trans, X_test_trans
 
-
-
 """
 This function returns True if the passed parameter is an integer
 def is_int(var):
