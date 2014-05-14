@@ -66,8 +66,6 @@ metadatamap = [
 "abstract present", "average words per s-unit", "average s-units per", "macrotype of assignment", "year of birth", "first language", "education", "course", "student ID"
 ]
 
-print len(featuremap)
-
 """
 LEX_featureset = []
 WB_featurset = []

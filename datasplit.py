@@ -8,7 +8,6 @@ from sklearn import svm, grid_search
 import numpy as np
 
 
-
 def natlan(metadata, data):
 
 	random.seed(448)
@@ -126,7 +125,6 @@ def sub(subset):
 
 	if subset == 'LEX':
 		return np.arange(LEX_start, LEX_end+1)
-
 	elif subset == 'WB':
 		return np.arange(WB_start, WB_end+1)
 	elif subset == 'SYN':
@@ -135,3 +133,5 @@ def sub(subset):
 		return np.arange(STRUC_start, STRUC_end)
 	else:
 		print "Unknown featureset"
+
+
