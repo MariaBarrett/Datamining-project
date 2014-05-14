@@ -147,7 +147,7 @@ def tree_selection(train_data,train_labels,number_of_features):
   importances = forest.feature_importances_
   indices = np.argsort(importances)[::-1]
 
-  return indices #[a.argsort()[-10:]] #[:number_of_features]
+  return indices[:number_of_features] #[a.argsort()[-10:]] #[:number_of_features]
 
 def inspect_tree_selection(train_data,train_labels):
   forest = ExtraTreesClassifier(n_estimators=250,

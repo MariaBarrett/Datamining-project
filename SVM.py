@@ -89,7 +89,8 @@ def SVM(X_train, y_train, X_test, y_test, subset=False):
 
 #Calling feature selection
 datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y)
-sorted_indices_of_features = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 30)
+sorted_indices_of_features = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 20)
+print sorted_indices_of_features
 
 print "*"*45
 print "Native Language"
