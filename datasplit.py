@@ -6,7 +6,8 @@ import pickle
 import matplotlib.pyplot as plt
 from sklearn import svm, grid_search
 import numpy as np
-
+from sklearn.ensemble import ExtraTreesClassifier
+import pylab as pl
 
 def natlan(metadata, data):
 
@@ -23,6 +24,7 @@ def natlan(metadata, data):
 
 	print "Native Language: English", counted[1]
 	print "Native Language: Not English", counted[0]
+	print "Choosing most numerous class - baseline:", max([counted[0], counted[1]]) / (counted[0]+counted[1])
 	print ""
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
@@ -49,6 +51,7 @@ def grade(metadata, data):
 
 	print "Grade: D", counted[0]
 	print "Grade: M", counted[1]
+	print "Choosing most numerous class - baseline:", max([counted[0], counted[1]]) / (counted[0]+counted[1])
 	print ""
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
@@ -70,7 +73,7 @@ def level(metadata, data):
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
 
-	print "Grade" 
+	print "Academic level" 
 	print "Distribution in train set"
 	counted = Counter(train[0])
 
@@ -78,7 +81,7 @@ def level(metadata, data):
 	print "Level 2", counted[2]
 	print "Level 3", counted[3]
 	print "Level 4", counted[4]
-
+	print "Choosing most numerous class - baseline:", max([counted[1], counted[2], counted[3], counted[4]]) / (counted[1]+counted[2]+counted[3]+counted[4])
 	print ""
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
@@ -133,5 +136,49 @@ def sub(subset):
 		return np.arange(STRUC_start, STRUC_end)
 	else:
 		print "Unknown featureset"
+
+#dataset[:,sub("SYN")]
+
+
+def tree_selection(train_data,train_labels,number_of_features):
+  forest = ExtraTreesClassifier(n_estimators=250,
+                                random_state=0)
+  forest.fit(train_data, train_labels)
+  importances = forest.feature_importances_
+  indices = np.argsort(importances)[::-1]
+
+  return indices #[a.argsort()[-10:]] #[:number_of_features]
+
+def inspect_tree_selection(train_data,train_labels):
+  forest = ExtraTreesClassifier(n_estimators=250,
+                                random_state=0)
+  forest.fit(train_data, train_labels)
+  importances = forest.feature_importances_
+  std = np.std([tree.feature_importances_ for tree in forest.estimators_],
+               axis=0)
+  indices = np.argsort(importances)[::-1]
+
+  # Print the feature ranking
+  print("Feature ranking:")
+
+  for f in range(len(indices)):
+      print("%d. feature, name: %s, importance: %f" % (f + 1, featuremap[indices[f]], importances[indices[f]]))
+
+  # Plot the feature importances of the forest
+  pl.figure()
+  n = 70
+  pl.title("Importance of %s most important features" %(n))
+  pl.bar(range(n), importances[indices][:n],
+         color="r", yerr=std[indices][:n], align="center")
+  #pl.xticks(n), indices[:n])
+  pl.xlim([-1, (n)])
+  pl.show()
+
+
+
+
+
+
+
 
 
