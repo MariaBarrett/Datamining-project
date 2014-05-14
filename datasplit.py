@@ -149,7 +149,7 @@ def tree_selection(train_data,train_labels,number_of_features):
 
   return indices[:number_of_features] #[a.argsort()[-10:]] #[:number_of_features]
 
-def inspect_tree_selection(train_data,train_labels):
+def inspect_tree_selection(train_data,train_labels, task):
   forest = ExtraTreesClassifier(n_estimators=250,
                                 random_state=0)
   forest.fit(train_data, train_labels)
@@ -167,7 +167,7 @@ def inspect_tree_selection(train_data,train_labels):
   # Plot the feature importances of the forest
   pl.figure()
   n = 70
-  pl.title("Importance of %s most important features" %(n))
+  pl.title("%s: Importance of %s most important features" %(task, n))
   pl.bar(range(n), importances[indices][:n],
          color="r", yerr=std[indices][:n], align="center")
   #pl.xticks(n), indices[:n])

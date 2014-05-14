@@ -41,7 +41,7 @@ AUtrain_Xn_pca, AUtest_Xn_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 
 #----------------------------------------------------------------------------------------
 #SVM
 #----------------------------------------------------------------------------------------
-def SVM(X_train, y_train, X_test, y_test, subset=False):
+def SVM(X_train, y_train, X_test, y_test, subset=False, best_features = []):
 	parameters = {'C': [0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128], 'gamma':[0.00001, 0.0001, 0.001, 0.01, 0.1, 1,]}
 	svr = svm.SVC()
 	clf = grid_search.GridSearchCV(svr, parameters)
@@ -72,7 +72,7 @@ def SVM(X_train, y_train, X_test, y_test, subset=False):
 			print '-'*45
 			print subset
 			print '-'*45
-			clf.fit(X_train[:,datasplit.sub(subset)], y_train)
+			clf.fit(X_train[:,datasplit.sub(subset)], y_train) #tjek gerne at det er rigtigt. Shapen ser rigtig ud. Jeg er bare lidt traet pt. 
 			print clf.best_params_
 			print "0-1 loss", clf.score(X_test[:,datasplit.sub(subset)], y_test)
 
@@ -87,26 +87,54 @@ def SVM(X_train, y_train, X_test, y_test, subset=False):
 			print classification_report(y_true, y_pred)
 			print ""
 
-#Calling feature selection
-datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y)
-sorted_indices_of_features = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 20)
-print sorted_indices_of_features
+	if len(best_features) > 1:
+		print '-'*45
+		print "With %s best features" %(len(best_features))
+		print '-'*45	
+
+		clf.fit(X_train[:,NLsorted_indices_of_best_features], y_train)
+		print clf.best_params_
+		print "0-1 loss", clf.score(X_test[:,NLsorted_indices_of_best_features], y_test)
+
+		print "Best parameters: ", clf.best_params_
+
+		print "Detailed classification report:"
+		print ""
+		print "The model is trained on the full development set."
+		print "The scores are computed on the full evaluation set."
+		print ""
+		y_true, y_pred = y_test, clf.predict(X_test[:,NLsorted_indices_of_best_features])
+		print classification_report(y_true, y_pred)
+		print ""
+
+#---------------------------------------------------------------
+#Calling
 
 print "*"*45
 print "Native Language"
 print "*"*45
-SVM(NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y, True)
+
+#Calling feature selection
+datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
+NLsorted_indices_of_best_features = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 20)
+
+SVM(NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y, True, NLsorted_indices_of_best_features)
 
 """
 print "*"*45
 print "Grade"
 print "*"*45
 SVM(GRtrain_Xn, GRtrain_y, GRtest_Xn, GRtest_y)
+
+datasplit.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
+LEsorted_indices_of_best_features = datasplit.tree_selection(GRtrain_Xn, GRtrain_y, 20)
 """
 
 print "*"*45
 print "Level"
 print "*"*45
-SVM(LEtrain_Xn, LEtrain_y, LEtest_Xn, LEtest_y, True)
 
+datasplit.inspect_tree_selection(LEtrain_Xn, LEtrain_y, "Academic level")
+LEsorted_indices_of_best_features = datasplit.tree_selection(LEtrain_Xn, LEtrain_y, 20)
 
+SVM(LEtrain_Xn, LEtrain_y, LEtest_Xn, LEtest_y, True, LEsorted_indices_of_best_features)
