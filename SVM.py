@@ -28,6 +28,7 @@ LEtrain_Xn, LEtest_Xn = clean.normalize(LEtrain_X, LEtest_X)
 AUtrain_Xn, AUtest_Xn = clean.normalize(AUtrain_X, AUtest_X)
 
 """
+
 #Calling PCA functions
 clean.princomp(NLtrain_Xn)
 NLtrain_Xn_pca, NLtest_Xn_pca = clean.princomp_transform(NLtrain_Xn, NLtest_Xn, 100)
@@ -121,6 +122,8 @@ NLsorted_indices_of_best_features = datasplit.tree_selection(NLtrain_Xn, NLtrain
 SVM(NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y, True, NLsorted_indices_of_best_features)
 
 """
+#Grade datasaettet indeholder NaN. Derfor er det kommenteret ud. Skal fikses...
+
 print "*"*45
 print "Grade"
 print "*"*45
