@@ -123,7 +123,7 @@ def author(metadata, data, min_text, no_authors, in_test=1):
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 
-def sub(subset):
+def sub(subset, best=None):
 	LEX_start = 0
 	LEX_end = featuremap.index('LEX_frac_)')
 
@@ -136,16 +136,23 @@ def sub(subset):
 	STRUC_start = featuremap.index('STRUC_num_sent')
 	STRUC_end = len(featuremap)
 
-	if subset == 'LEX':
-		return np.arange(LEX_start, LEX_end+1)
-	elif subset == 'WB':
-		return np.arange(WB_start, WB_end+1)
-	elif subset == 'SYN':
-		return np.arange(SYN_start, SYN_end+1)
-	elif subset == 'STRUC':
-		return np.arange(STRUC_start, STRUC_end)
+	indices = list()
+
+	if 'F1' in subset:
+		indices += range(LEX_start, LEX_end+1)
+	if 'F2' in subset:
+		indices += range(SYN_start, SYN_end+1)
+	if 'F3' in subset:
+		indices += range(STRUC_start, STRUC_end)
+	if 'F4' in subset:
+		indices += range(WB_start, WB_end+1)
+	if 'all' in subset:
+		indices += range(LEX_start, STRUC_end)
+	if len(indices) > 0:
+		return indices
 	else:
-		print "Unknown featureset"
+		return subset[0]
+
 
 #dataset[:,sub("SYN")]
 
@@ -175,7 +182,8 @@ def inspect_tree_selection(train_data,train_labels, task):
 
   # Plot the feature importances of the forest
   pl.figure()
-  n = 70
+  n = train_data.shape[1]
+  print n
   pl.title("%s: Importance of %s most important features" %(task, n))
   pl.bar(range(n), importances[indices][:n],
          color="r", yerr=std[indices][:n], align="center")
