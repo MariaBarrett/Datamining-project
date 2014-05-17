@@ -64,49 +64,36 @@ ng_counter, number_of_ngrams = count_ngrams(texts, n)
 frequencies = pd.DataFrame(ng_counter.items(), columns = ['ngram', 'freq'])
 frequencies['freq'] = frequencies['freq'] / number_of_ngrams
 
-all_ngram = list(frequencies.ngram)
-all_freq = np.array(frequencies.freq)
-	
-
 
 #Build ngram-frquencies for each document
 print '### Build ngram frequencies for each document. n=', n
 
 doc_id = list(train[did])
 doc_freq = []
-doc_ngram = []
 for text in texts:
 	ngram_counter, number_of_ngrams = count_ngram(text, n)
 	freq = pd.DataFrame(ng_counter.items(), columns = ['ngram', 'freq'])
 	freq['freq'] = freq['freq'] / number_of_ngrams
-	doc_freq.append(np.array(freq.freq))
-	doc_ngram.append(list(freq.ngram))
+	doc_freq.append(freq)
 
 # Build author profiles
 # profiles and authors variables are interlinked. profiles[10] is the author profile (list of ngram frequencies) for authors[10], etc.
 
-auth_freq = []
-auth_ngram = []
+profiles = []
 for author in authors:
 	a_texts = metadata.load_corpus_txt(train[train[aid]==author][did])
 	ng_counter, number_of_ngrams = count_ngrams(a_texts, n)
 	freq = pd.DataFrame(ng_counter.items(), columns = ['ngram', 'freq'])
 	freq['freq'] = freq['freq'] / number_of_ngrams
-	auth_freq.append(np.array(freq.freq))
-	auth_ngram.append(list(freq.ngram))
+	profiles.append(freq)
 
 
 #pickle.dump( variable_name, open('file.name', 'wb'))
 #pickle.load( open('file.name', 'rb') )
 
-pickle.dump( all_freq, open('ng_all_freq.p', 'wb'))
+pickle.dump( frequencies, open('ng_frequencies.p', 'wb'))
 pickle.dump( doc_id, open('ng_doc_id.p', 'wb'))
-
-pickle.dump( doc_ngram, open('ng_doc_ngram.p', 'wb'))
 pickle.dump( doc_freq, open('ng_doc_freq.p', 'wb'))
-
 pickle.dump( authors, open('ng_authors.p', 'wb'))
-pickle.dump( auth_ngram, open('ng_auth_ngram.p', 'wb'))
-pickle.dump( auth_freq, open('ng_auth_freq.p', 'wb'))
-
+pickle.dump( profiles, open('ng_profiles.p', 'wb'))
 

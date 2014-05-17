@@ -1,9 +1,9 @@
-from __future__ import division
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import random, glob, nltk
+from bs4 import BeautifulSoup
 from collections import Counter
+import random, pickle
 
 
 filepath ='2539/documentation/'
@@ -12,33 +12,31 @@ filename = 'BAWE.xls'
 data = pd.read_excel(filepath+filename, 'Sheet1')
 
 
-def build_hist_box(data, group='disciplinary group'):
+def build_hist_box(data):
 	columns = ['words','s-units','p-units']
 
-	data.groupby([group])[columns].describe()
+	data.groupby(['disciplinary group'])[columns].describe()
 
 	for g in columns:
-		data[g].hist(by=data[group])
+		data[g].hist(by=data['disciplinary group'])
 		plt.suptitle(g)
-		data.boxplot(column=g, by=group)
+		data.boxplot(column=g, by='disciplinary group')
 
 	plt.show()
-
-build_hist_box(data, group='grade')
 
 # sort files
 
 def split_authors(data, threshold=3):
-	''' strips authors with less than threshold articles. Split remaining article
+	''' strips authors with less than 3 (or threshold) articles. Split remaining article
 	ID's into train and test sets, ensuring each author is represented
-	with at least threshold-1 article in train and exactly 1 in test.
+	with at least 1 article in train and exactly 1 in test.
 	Returns list of documents ID's (did) as lists '''
 
 
 	student_id = data['student_id'].unique()
 
-	train = []	# List of document ID's
-	train_id = [] # List of student ID's
+	train = []
+	train_id = []
 	test = []
 	test_id = []
 
@@ -56,16 +54,39 @@ def split_authors(data, threshold=3):
 				train_id.append(sid)
 	return train, test, train_id, test_id
 
-<<<<<<< HEAD:metadata.py
+def split_authors_pd(data, threshold=3):
+	''' strips authors with less than 3 (or threshold) articles. Split remaining article
+	ID's into train and test sets, ensuring each author is represented
+	with at least 1 article in train and exactly 1 in test.
+	Returns pandas dataframe containing all author ids('aid') and document ids('did'''
+
+
+	# Sanity check. Code won't work with threshold less than 2!
+	if threshold < 2:
+		threshold = 2
+
+	columns = ['student_id', 'id']
+	test = pd.DataFrame(columns=columns)
+	train = test[:]
+
+	author_ids = data['student_id'].unique()
+
+	for aid in author_ids:
+		rows = data[data['student_id']== aid][['student_id','id']]
+		length = len(rows)
+
+		if length >= threshold:
+			r = random.randint(0, length-1)
+			test = test.append(rows.iloc[r])
+			rng = range(length)
+			rng.pop(r)
+			train = train.append(rows.iloc[rng])
+	return train, test
+
 def stripAllTags( html ):
 	if html is None:
 		return None
 	return ''.join( BeautifulSoup( html ).findAll( text = True ) ) 
-=======
-tr, te, tid, teid = split_authors(data, 9)
-
-print len(te)
->>>>>>> FETCH_HEAD:Old files/metadata.py
 
 def load_corpus_txt(did):
 	''' Takes a list of document id's (did) (for example from 
@@ -76,7 +97,7 @@ def load_corpus_txt(did):
 	fileext = '.txt'
 	texts = []
 	for d in did:
-		texts.append(open(path+d+fileext).read().strip())
+		texts.append(stripAllTags(open(path+d+fileext).read().strip()))
 	return texts
 
 def get_all_unique_chars(texts, verbose=False):
@@ -99,13 +120,3 @@ def get_all_unique_chars(texts, verbose=False):
 		print 'unique characters', len(unique)
 
 	return unique
-
-def count_ngrams(texts, n):
-	results = []
-	for t in texts:
-		results.append(list(Counter(nltk.util.ngrams(t, n))))
-	return results
-
-
-
-
