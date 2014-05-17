@@ -27,8 +27,18 @@ GRtrain_Xn, GRtest_Xn = clean.normalize(GRtrain_X, GRtest_X)
 LEtrain_Xn, LEtest_Xn = clean.normalize(LEtrain_X, LEtest_X)
 AUtrain_Xn, AUtest_Xn = clean.normalize(AUtrain_X, AUtest_X)
 
-"""
+# TREE SELECTION INDICES
+datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
+NLtree_selection = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 20)
 
+datasplit.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
+GRtree_selection = datasplit.tree_selection(GRtrain_Xn, GRtrain_y, 20)
+datasplit.inspect_tree_selection(LEtrain_Xn, LEtrain_y, "Academic level")
+LEtree_selection = datasplit.tree_selection(LEtrain_Xn, LEtrain_y, 20)
+datasplit.inspect_tree_selection(AUtrain_Xn, AUtrain_y, "Author")
+LEtree_selection = datasplit.tree_selection(AUtrain_Xn, AUtrain_y, 20)
+
+"""
 #Calling PCA functions
 clean.princomp(NLtrain_Xn)
 NLtrain_Xn_pca, NLtest_Xn_pca = clean.princomp_transform(NLtrain_Xn, NLtest_Xn, 100)
@@ -110,34 +120,26 @@ def SVM(X_train, y_train, X_test, y_test, subset=False, best_features = []):
 
 #---------------------------------------------------------------
 #Calling
-
+"""
 print "*"*45
 print "Native Language"
 print "*"*45
-
-#Calling feature selection
-datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
-NLsorted_indices_of_best_features = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 20)
-
 SVM(NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y, True, NLsorted_indices_of_best_features)
 
-"""
-#Grade datasaettet indeholder NaN. Derfor er det kommenteret ud. Skal fikses...
+
+# Grade datasaettet indeholder NaN. Derfor er det kommenteret ud. Skal fikses... 
+# Har testet og umiddelbart er der ingen Nan i hverken raw eller normalized data
+# Tror maaske det var en variable der var navngivet forkert /Lasse
 
 print "*"*45
 print "Grade"
-print "*"*45
 SVM(GRtrain_Xn, GRtrain_y, GRtest_Xn, GRtest_y)
 
-datasplit.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
-LEsorted_indices_of_best_features = datasplit.tree_selection(GRtrain_Xn, GRtrain_y, 20)
-"""
+
+
 
 print "*"*45
 print "Level"
 print "*"*45
-
-datasplit.inspect_tree_selection(LEtrain_Xn, LEtrain_y, "Academic level")
-LEsorted_indices_of_best_features = datasplit.tree_selection(LEtrain_Xn, LEtrain_y, 20)
-
 SVM(LEtrain_Xn, LEtrain_y, LEtest_Xn, LEtest_y, True, LEsorted_indices_of_best_features)
+"""

@@ -9,6 +9,11 @@ import numpy as np
 from sklearn.ensemble import ExtraTreesClassifier
 import pylab as pl
 
+metadata = pickle.load( open( "metadata.p", "rb" ) )
+data = pickle.load( open( "dataset.p", "rb" ) )
+plusone = np.where(metadata[:,9] != "1")[0] # Get indexes for all texts written by more than one person
+data, metadata = np.delete(data, plusone, 0), np.delete(metadata, plusone, 0) # Remove all texts written by more than one person from data
+
 def natlan(metadata, data):
 
 	random.seed(448)
@@ -18,6 +23,7 @@ def natlan(metadata, data):
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
 
+	"""
 	print "Native Language" 
 	print "distribution in train set"
 	counted = Counter(train[0])
@@ -29,6 +35,7 @@ def natlan(metadata, data):
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
 	print "-" *45
+	"""
 
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
@@ -45,6 +52,7 @@ def grade(metadata, data):
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
 
+	"""
 	print "Grade" 
 	print "Distribution in train set"
 	counted = Counter(train[0])
@@ -56,7 +64,7 @@ def grade(metadata, data):
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
 	print "-" *45
-
+	"""
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 def level(metadata, data):
@@ -73,6 +81,7 @@ def level(metadata, data):
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
 
+	"""
 	print "Academic level" 
 	print "Distribution in train set"
 	counted = Counter(train[0])
@@ -86,6 +95,7 @@ def level(metadata, data):
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
 	print "-" *45
+	"""
 
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
@@ -154,8 +164,7 @@ def inspect_tree_selection(train_data,train_labels, task):
                                 random_state=0)
   forest.fit(train_data, train_labels)
   importances = forest.feature_importances_
-  std = np.std([tree.feature_importances_ for tree in forest.estimators_],
-               axis=0)
+  std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
   indices = np.argsort(importances)[::-1]
 
   # Print the feature ranking
@@ -176,7 +185,7 @@ def inspect_tree_selection(train_data,train_labels, task):
 
 
 
-
+#trainy, trainX, testy, testX = grade(metadata, data)
 
 
 
