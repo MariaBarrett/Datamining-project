@@ -5,8 +5,9 @@ import datasplit
 import clean
 import pickle
 import matplotlib.pyplot as plt
-from sklearn import svm, grid_search
+from sklearn import svm, tree, neighbors, grid_search
 import numpy as np
+from scipy import stats
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
 
@@ -19,22 +20,26 @@ data, metadata = np.delete(data, plusone, 0), np.delete(metadata, plusone, 0) # 
 NLtrain_y, NLtrain_X, NLtest_y, NLtest_X = datasplit.natlan(metadata,data)
 GRtrain_y, GRtrain_X, GRtest_y, GRtest_X = datasplit.grade(metadata,data)
 LEtrain_y, LEtrain_X, LEtest_y, LEtest_X = datasplit.level(metadata,data)
-AUtrain_y, AUtrain_X, AUtest_y, AUtest_X = datasplit.author(metadata,data,4,3,2)
+AUtrain_y20, AUtrain_X20, AUtest_y20, AUtest_X20 = datasplit.author(metadata,data,4,20,2)
+AUtrain_y100, AUtrain_X100, AUtest_y100, AUtest_X100 = datasplit.author(metadata,data,4,100,2)
 
 # NORMALIZED DATA SETS
 NLtrain_Xn, NLtest_Xn = clean.normalize(NLtrain_X, NLtest_X)
 GRtrain_Xn, GRtest_Xn = clean.normalize(GRtrain_X, GRtest_X)
 LEtrain_Xn, LEtest_Xn = clean.normalize(LEtrain_X, LEtest_X)
-AUtrain_Xn, AUtest_Xn = clean.normalize(AUtrain_X, AUtest_X)
+AUtrain_Xn20, AUtest_Xn20 = clean.normalize(AUtrain_X20, AUtest_X20)
+AUtrain_Xn100, AUtest_Xn100 = clean.normalize(AUtrain_X100, AUtest_X100)
 
 # TREE SELECTION INDICES
-#datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
+datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
 #NLtree_selection = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 20)
-#datasplit.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
+datasplit.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
 #GRtree_selection = datasplit.tree_selection(GRtrain_Xn, GRtrain_y, 20)
-#datasplit.inspect_tree_selection(LEtrain_Xn, LEtrain_y, "Academic level")
+datasplit.inspect_tree_selection(LEtrain_Xn, LEtrain_y, "Academic level")
 #LEtree_selection = datasplit.tree_selection(LEtrain_Xn, LEtrain_y, 20)
-#datasplit.inspect_tree_selection(AUtrain_Xn, AUtrain_y, "Author")
+datasplit.inspect_tree_selection(AUtrain_Xn20, AUtrain_y20, "Author")
+#AUtree_selection = datasplit.tree_selection(AUtrain_Xn, AUtrain_y, 20)
+datasplit.inspect_tree_selection(AUtrain_Xn100, AUtrain_y100, "Author")
 #AUtree_selection = datasplit.tree_selection(AUtrain_Xn, AUtrain_y, 20)
 
 """
@@ -53,11 +58,22 @@ AUtrain_Xn_pca, AUtest_Xn_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 
 # SVM MAIN FUNCTION
 #----------------------------------------------------------------------------------------
 
-def SVM(X_train, y_train, X_test, y_test, subsets, tree_select=False, anova=False):
+def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=False, anova=False):
 	
-	parameters = {'C': [0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128], 'gamma':[0.00001, 0.0001, 0.001, 0.01, 0.1, 1,]}
-	svr = svm.SVC()
-	clf = grid_search.GridSearchCV(svr, parameters)
+	if classifier == "SVM":
+		parameters = {'C': [0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128], 'gamma':[0.00001, 0.0001, 0.001, 0.01, 0.1, 1,]}
+		svr = svm.SVC()
+		clf = grid_search.GridSearchCV(svr, parameters)
+	elif classifier == "DTC":
+		parameters = {'max_depth': [None, 1, 2, 4, 8, 16, 32], 'min_samples_leaf':[1, 2, 4, 8, 16, 32]}
+		id3 = tree.DecisionTreeClassifier()
+		clf = grid_search.GridSearchCV(id3, parameters)
+	elif classifier == "KNN":
+		parameters = {'n_neighbors': [None, 1, 2, 4, 5, 8, 12, 16]}
+		knn = neighbors.KNeighborsClassifier()
+		clf = grid_search.GridSearchCV(knn, parameters)
+	else:
+		print "Unable to recognize the requested algorithm"
 	
 	if tree_select:
 		subsets.append(["TREE SELECTION"])
@@ -76,15 +92,11 @@ def SVM(X_train, y_train, X_test, y_test, subsets, tree_select=False, anova=Fals
 			feat_index = datasplit.anova(X_train, y_train, anova) # Virker ikke... ENDNU!
 		else: 
 			feat_index = datasplit.sub(ss)
-
-		a = X_test[:,feat_index]
-		
-		print a[375]
-
 		
 		clf.fit(X_train[:,feat_index], y_train)
-		print "0-1 loss", clf.score(X_test[:,feat_index], y_test)
 		print "Best parameters: ", clf.best_params_
+		print "\n0-1 loss", clf.score(X_test[:,feat_index], y_test)
+		print "Baseline", stats.mode(y_test)[1][0]/len(y_test) # ZeroR baseline
 
 		print "\nDetailed classification report:\n"
 		print "The model is trained on the full development set."
@@ -97,28 +109,55 @@ def SVM(X_train, y_train, X_test, y_test, subsets, tree_select=False, anova=Fals
 #----------------------------------------------------------------------------------------
 # EXPERIMENTS
 #----------------------------------------------------------------------------------------
-"""
+
 print "\n"+"*"*45
 print "Native Language"
 print "*"*45+"\n"
-SVM(NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y,
-	[["F1"],["F2"],["F3"],["F4"],["F1","F2"],["F1","F2","F3"],["all"]], tree_select=200)
-"""
+main("SVM", NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=225)
+main("DTC", NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=225)
+main("KNN", NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=225)
+
 print "\n"+"*"*45
 print "Grade"
 print "*"*45+"\n"
-SVM(GRtrain_Xn, GRtrain_y, GRtest_Xn, GRtest_y,
-	[["F2"]])
-"""
+main("SVM", GRtrain_Xn, GRtrain_y, GRtest_Xn, GRtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=215)
+main("DTC", GRtrain_Xn, GRtrain_y, GRtest_Xn, GRtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=215)
+main("KNN", GRtrain_Xn, GRtrain_y, GRtest_Xn, GRtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=215)
+
+
 print "\n"+"*"*45
 print "Academic level"
 print "*"*45+"\n"
-SVM(LEtrain_Xn, LEtrain_y, LEtest_Xn, LEtest_y,
-	[["F1"],["F2"],["F3"],["F4"],["F1","F2"],["F1","F2","F3"],["all"]], tree_select=200)
+main("SVM", LEtrain_Xn, LEtrain_y, LEtest_Xn, LEtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
+main("DTC", LEtrain_Xn, LEtrain_y, LEtest_Xn, LEtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
+main("KNN", LEtrain_Xn, LEtrain_y, LEtest_Xn, LEtest_y,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
 
 print "\n"+"*"*45
 print "Author"
 print "*"*45+"\n"
-SVM(AUtrain_Xn, AUtrain_y, AUtest_Xn, AUtest_y,
-	[["F1"],["F2"],["F3"],["F4"],["F1","F2"],["F1","F2","F3"],["all"]], tree_select=150)
-"""
+main("SVM", AUtrain_Xn20, AUtrain_y20, AUtest_Xn20, AUtest_y20,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=180)
+main("DTC", AUtrain_Xn20, AUtrain_y20, AUtest_Xn20, AUtest_y20,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=180)
+main("KNN", AUtrain_Xn20, AUtrain_y20, AUtest_Xn20, AUtest_y20,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=180)
+
+print "\n"+"*"*45
+print "Author"
+print "*"*45+"\n"
+main("SVM", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
+main("DTC", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
+main("KNN", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
+	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
+

@@ -22,39 +22,18 @@ def normalize(traindata,testdata):
 
 	train_nan = np.isnan(traindata_normalized)
 	test_nan = np.isnan(testdata_normalized)
+	train_inf = np.isinf(traindata_normalized)
+	test_inf = np.isinf(testdata_normalized)
 
 	traindata_normalized[train_nan] = 0
 	testdata_normalized[test_nan] = 0
+	traindata_normalized[train_inf] = 0
+	testdata_normalized[test_inf] = 0
 
 	return traindata_normalized, testdata_normalized
 
 	#return traindata_normalized
 
-def lasses(labels,data,print_l=False):
-	"""This function calculates an Lasse's K for feature selection. The
-	lower the value, the more effective the feature is in describing a given
-	class labels"""
-
-	unique = set(labels)
-	group_std = list()
-
-	for l in unique:
-		index = np.where(labels==l)[0]
-		group = np.array([data[i] for i in index])
-		group_std.append(np.std(group, axis=0))
-
-	av_mean_std = np.mean(np.array(group_std), axis=0)
-	overall_std = np.std(data, axis=0)
-
-	l_scores = av_mean_std/overall_std
-	l_names = zip(l_scores, featuremap)
-	l_names.sort(key = lambda t: t[0])
-
-	if print_l != False:
-		for i in range(print_l):
-			print str(i+1)+". "+l_names[i][1]
-
-	return l_names
 
 """
 This function takes a dataset and a max accepted number of standard deviations.

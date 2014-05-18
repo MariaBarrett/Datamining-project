@@ -125,10 +125,10 @@ def author(metadata, data, min_text, no_authors, in_test=1):
 
 def sub(subset, best=None):
 	LEX_start = 0
-	LEX_end = featuremap.index('LEX_frac_)')
-
-	WB_start = featuremap.index('WB_num_words')
-	WB_end = featuremap.index('WB_frac_word_len20')
+	LEX_end = featuremap.index('WB_frac_word_len20')
+	#LEX_end = featuremap.index('LEX_frac_)')
+	#WB_start = featuremap.index('WB_num_words')
+	#WB_end = featuremap.index('WB_frac_word_len20')
 
 	SYN_start = featuremap.index('SYN_frac_,')
 	SYN_end = featuremap.index('SYN_frac_POS_X')
@@ -144,8 +144,6 @@ def sub(subset, best=None):
 		indices += range(SYN_start, SYN_end+1)
 	if 'F3' in subset:
 		indices += range(STRUC_start, STRUC_end)
-	if 'F4' in subset:
-		indices += range(WB_start, WB_end+1)
 	if 'all' in subset:
 		indices += range(LEX_start, STRUC_end)
 	if len(indices) > 0:
@@ -192,8 +190,27 @@ def inspect_tree_selection(train_data,train_labels, task):
   pl.show()
 
 
+def anova(data,labels,number_of_features):
+	"""This function calculates a Lasse's K for feature selection. The
+	lower the value, the more effective the feature is in describing a given
+	class labels"""
 
-#trainy, trainX, testy, testX = grade(metadata, data)
+	unique = set(labels)
+	group_std = list()
+
+	for l in unique:
+		index = np.where(labels==l)[0]
+		group = np.array([data[i] for i in index])
+		group_std.append(np.std(group, axis=0))
+
+	av_mean_std = np.mean(np.array(group_std), axis=0)
+	overall_std = np.std(data, axis=0)
+
+	l_scores = av_mean_std/overall_std
+	indices = np.argsort(l_scores)
+
+	return indices[:number_of_features]
+
 
 
 
