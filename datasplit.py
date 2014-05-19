@@ -99,7 +99,12 @@ def level(metadata, data):
 
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
-def author(metadata, data, min_text, no_authors, in_test=1):
+def author(metadata, data, min_text, no_authors, in_test=1, feat_sort=False):
+
+	if feat_sort:
+		sort_delete = np.where(metadata[:,feat_sort[0]] != feat_sort[1])[0]
+		data = np.delete(data, sort_delete, 0)
+		metadata = np.delete(metadata, sort_delete, 0)
 
 	random.seed(448)
 	author_count = Counter(metadata[:,-1])
