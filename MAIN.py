@@ -10,6 +10,7 @@ import numpy as np
 from scipy import stats
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
+import clustering
 
 metadata = pickle.load( open( "metadata.p", "rb" ) )
 data = pickle.load( open( "dataset.p", "rb" ) )
@@ -32,6 +33,18 @@ AUtrain_Xn20, AUtest_Xn20 = clean.normalize(AUtrain_X20, AUtest_X20)
 AUtrain_Xn100, AUtest_Xn100 = clean.normalize(AUtrain_X100, AUtest_X100)
 AUtrain_XnAH, AUtest_XnAH = clean.normalize(AUtrain_XAH, AUtest_XAH)
 
+
+# TREE SELECTION INDICES
+datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
+#NLtree_selection = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 20)
+datasplit.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
+#GRtree_selection = datasplit.tree_selection(GRtrain_Xn, GRtrain_y, 20)
+datasplit.inspect_tree_selection(LEtrain_Xn, LEtrain_y, "Academic level")
+#LEtree_selection = datasplit.tree_selection(LEtrain_Xn, LEtrain_y, 20)
+datasplit.inspect_tree_selection(AUtrain_Xn20, AUtrain_y20, "Author")
+#AUtree_selection = datasplit.tree_selection(AUtrain_Xn, AUtrain_y, 20)
+datasplit.inspect_tree_selection(AUtrain_Xn100, AUtrain_y100, "Author")
+#AUtree_selection = datasplit.tree_selection(AUtrain_Xn, AUtrain_y, 20)
 
 # TREE SELECTION FEATURES EVALUATION PLOTS
 #datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
@@ -95,6 +108,7 @@ def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=Fals
 			feat_index = datasplit.sub(ss)
 		print X_train.shape
 		clf.fit(X_train[:,feat_index], y_train)
+
 		print "Best parameters: ", clf.best_params_
 		print "\n0-1 loss", clf.score(X_test[:,feat_index], y_test)
 		print "Baseline", stats.mode(y_test)[1][0]/len(y_test) # ZeroR baseline

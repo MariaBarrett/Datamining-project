@@ -54,6 +54,20 @@ def split_authors(data, threshold=3):
 				train_id.append(sid)
 	return train, test, train_id, test_id
 
+def split(data, split=0.7):
+	''' splits documents into a train and test set. returns 2 lists of document ids.
+	'''
+	doc_id = np.array(data['id'])
+	l = len(doc_id)
+	index = range(l)
+	np.random.shuffle(index)
+	split = int(l*split)
+	
+	train = doc_id[index[:split]]
+	test = doc_id[index[split:]]
+
+	return train, test
+
 def split_authors_pd(data, threshold=4, minimum=2, max_authors=100):
 	''' strips authors with less than 3 (or threshold) articles. Split remaining article
 	ID's into train and test sets, ensuring each author is represented
