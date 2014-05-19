@@ -27,11 +27,12 @@ def build_hist_box(data):
 # sort files
 
 def split_authors(data, threshold=3):
+	#Deprecated
 	''' strips authors with less than 3 (or threshold) articles. Split remaining article
 	ID's into train and test sets, ensuring each author is represented
 	with at least 1 article in train and exactly 1 in test.
 	Returns list of documents ID's (did) as lists '''
-
+	print "this function is deprecated!"
 
 	student_id = data['student_id'].unique()
 
@@ -45,7 +46,6 @@ def split_authors(data, threshold=3):
 		length = len(dids)
 		if length > threshold:
 			dids = list(dids)
-			r = random.randint(0,length-1)
 			test.append(dids[r])
 			test_id.append(sid)
 			dids.pop(r)
@@ -54,32 +54,42 @@ def split_authors(data, threshold=3):
 				train_id.append(sid)
 	return train, test, train_id, test_id
 
-def split_authors_pd(data, threshold=3):
+def split_authors_pd(data, threshold=4, minimum=2, max_authors=100):
 	''' strips authors with less than 3 (or threshold) articles. Split remaining article
 	ID's into train and test sets, ensuring each author is represented
-	with at least 1 article in train and exactly 1 in test.
+	with at least 1 article in train and exactly minimum in test.
 	Returns pandas dataframe containing all author ids('aid') and document ids('did'''
 
+	student_id = data['student_id'].unique()
+
+	no_of_doc = []
+	for sid in student_id:
+		no_of_doc.append(len(data[data.student_id == sid]))
+
+	index = np.argsort(no_of_doc)
+
+	student_id = student_id[index[-max_authors:]]
 
 	# Sanity check. Code won't work with threshold less than 2!
-	if threshold < 2:
+	if threshold < minimum:
 		threshold = 2
 
 	columns = ['student_id', 'id']
 	test = pd.DataFrame(columns=columns)
 	train = test[:]
 
-	author_ids = data['student_id'].unique()
+	author_ids = student_id
 
 	for aid in author_ids:
 		rows = data[data['student_id']== aid][['student_id','id']]
 		length = len(rows)
 
 		if length >= threshold:
-			r = random.randint(0, length-1)
-			test = test.append(rows.iloc[r])
 			rng = range(length)
-			rng.pop(r)
+			for i in range(minimum):
+				r = random.randint(0,len(rng)-1)
+				test = test.append(rows.iloc[r]) #test is a pandas DataFrame, so append doesn't mutate the object!
+				rng.pop(r)
 			train = train.append(rows.iloc[rng])
 	return train, test
 
