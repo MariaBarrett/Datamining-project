@@ -10,6 +10,7 @@ import numpy as np
 from scipy import stats
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
+import clustering
 
 metadata = pickle.load( open( "metadata.p", "rb" ) )
 data = pickle.load( open( "dataset.p", "rb" ) )
@@ -29,6 +30,7 @@ GRtrain_Xn, GRtest_Xn = clean.normalize(GRtrain_X, GRtest_X)
 LEtrain_Xn, LEtest_Xn = clean.normalize(LEtrain_X, LEtest_X)
 AUtrain_Xn20, AUtest_Xn20 = clean.normalize(AUtrain_X20, AUtest_X20)
 AUtrain_Xn100, AUtest_Xn100 = clean.normalize(AUtrain_X100, AUtest_X100)
+
 
 # TREE SELECTION INDICES
 datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
@@ -94,6 +96,7 @@ def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=Fals
 			feat_index = datasplit.sub(ss)
 		
 		clf.fit(X_train[:,feat_index], y_train)
+
 		print "Best parameters: ", clf.best_params_
 		print "\n0-1 loss", clf.score(X_test[:,feat_index], y_test)
 		print "Baseline", stats.mode(y_test)[1][0]/len(y_test) # ZeroR baseline
