@@ -9,11 +9,6 @@ import numpy as np
 from sklearn.ensemble import ExtraTreesClassifier
 import pylab as pl
 
-metadata = pickle.load( open( "metadata.p", "rb" ) )
-data = pickle.load( open( "dataset.p", "rb" ) )
-plusone = np.where(metadata[:,9] != "1")[0] # Get indexes for all texts written by more than one person
-data, metadata = np.delete(data, plusone, 0), np.delete(metadata, plusone, 0) # Remove all texts written by more than one person from data
-
 def natlan(metadata, data):
 
 	random.seed(448)
@@ -23,19 +18,10 @@ def natlan(metadata, data):
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
 
-	"""
-	print "Native Language" 
-	print "distribution in train set"
-	counted = Counter(train[0])
-
-	print "Native Language: English", counted[1]
-	print "Native Language: Not English", counted[0]
-	print "Choosing most numerous class - baseline:", max([counted[0], counted[1]]) / (counted[0]+counted[1])
-	print ""
+	print "Native Language:" 
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
 	print "-" *45
-	"""
 
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
@@ -52,19 +38,11 @@ def grade(metadata, data):
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
 
-	"""
-	print "Grade" 
-	print "Distribution in train set"
-	counted = Counter(train[0])
-
-	print "Grade: D", counted[0]
-	print "Grade: M", counted[1]
-	print "Choosing most numerous class - baseline:", max([counted[0], counted[1]]) / (counted[0]+counted[1])
-	print ""
+	print "Grade:"
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
 	print "-" *45
-	"""
+	
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 def level(metadata, data):
@@ -81,21 +59,10 @@ def level(metadata, data):
 	split = int(len(zipped)*0.80)
 	train, test = zip(*zipped[:split]), zip(*zipped[split:])
 
-	"""
-	print "Academic level" 
-	print "Distribution in train set"
-	counted = Counter(train[0])
-
-	print "Level 1", counted[1]
-	print "Level 2", counted[2]
-	print "Level 3", counted[3]
-	print "Level 4", counted[4]
-	print "Choosing most numerous class - baseline:", max([counted[1], counted[2], counted[3], counted[4]]) / (counted[1]+counted[2]+counted[3]+counted[4])
-	print ""
+	print "Academic level:" 
 	print "Train set size ", len(train[0])
 	print "Test set size ", len(test[0])
 	print "-" *45
-	"""
 
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
@@ -125,15 +92,20 @@ def author(metadata, data, min_text, no_authors, in_test=1, feat_sort=False):
 	test = zip(*[zipped[ti] for ti in test_index])
 	train = zip(*[i for j, i in enumerate(zipped) if j not in test_index])
 
+	print "Author:" 
+	print "Train set size ", len(train[0])
+	print "Test set size ", len(test[0])
+	print "Text per author in test set", in_test
+	print "Text per author in train set", str(most_freq[:no_authors][-1][0])+"-"+str(most_freq[:no_authors][0][0])
+	print "-" *45
+
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 
 def sub(subset, best=None):
+	
 	LEX_start = 0
 	LEX_end = featuremap.index('WB_frac_word_len20')
-	#LEX_end = featuremap.index('LEX_frac_)')
-	#WB_start = featuremap.index('WB_num_words')
-	#WB_end = featuremap.index('WB_frac_word_len20')
 
 	SYN_start = featuremap.index('SYN_frac_,')
 	SYN_end = featuremap.index('SYN_frac_POS_X')
@@ -157,28 +129,27 @@ def sub(subset, best=None):
 		return subset[0]
 
 
-#dataset[:,sub("SYN")]
-
-
 def tree_selection(train_data,train_labels,number_of_features):
-  forest = ExtraTreesClassifier(n_estimators=250,
-                                random_state=0)
+  
+  forest = ExtraTreesClassifier(n_estimators=250, random_state=0)
   forest.fit(train_data, train_labels)
   importances = forest.feature_importances_
   indices = np.argsort(importances)[::-1]
 
-  return indices[:number_of_features] #[a.argsort()[-10:]] #[:number_of_features]
+  return indices[:number_of_features]
+
 
 def inspect_tree_selection(train_data,train_labels, task):
-  forest = ExtraTreesClassifier(n_estimators=250,
-                                random_state=0)
+  
+  forest = ExtraTreesClassifier(n_estimators=250, random_state=0)
   forest.fit(train_data, train_labels)
   importances = forest.feature_importances_
   std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
   indices = np.argsort(importances)[::-1]
 
   # Print the feature ranking
-  print("Feature ranking:")
+  print "-"*45
+  print("\nFeature ranking for %s task:" %(task))
 
   for f in range(len(indices)):
       print("%d. feature, name: %s, importance: %f" % (f + 1, featuremap[indices[f]], importances[indices[f]]))
@@ -186,13 +157,58 @@ def inspect_tree_selection(train_data,train_labels, task):
   # Plot the feature importances of the forest
   pl.figure()
   n = train_data.shape[1]
-  print n
-  pl.title("%s: Importance of %s most important features" %(task, n))
-  pl.bar(range(n), importances[indices][:n],
-         color="r", yerr=std[indices][:n], align="center")
-  #pl.xticks(n), indices[:n])
+  pl.title("%s: Sorted feature importance" %(task))
+  pl.bar(range(n), importances[indices][:n], color="black", align="center")
   pl.xlim([-1, (n)])
   pl.show()
+
+def normalize(traindata,testdata):
+	"""This function normalizes a dataset. It is possible to include
+	a test dataset to be normalized with the mean and std calculated from
+	the training dataset."""
+
+	mean = np.mean(traindata, axis=0)
+	std = np.std(traindata, axis=0)
+
+	traindata_normalized = np.copy((traindata-mean)/std)
+	testdata_normalized = np.copy((testdata-mean)/std)
+
+	train_nan = np.isnan(traindata_normalized)
+	test_nan = np.isnan(testdata_normalized)
+	train_inf = np.isinf(traindata_normalized)
+	test_inf = np.isinf(testdata_normalized)
+
+	traindata_normalized[train_nan] = 0
+	testdata_normalized[test_nan] = 0
+	traindata_normalized[train_inf] = 0
+	testdata_normalized[test_inf] = 0
+
+	return traindata_normalized, testdata_normalized
+
+def inspect_pca(train):
+	
+	pca = PCA(copy=True)
+	transformed = pca.fit_transform(train)
+	components = pca.components_
+	exp_variance = pca.explained_variance_ratio_
+
+	x = np.array([i for i in range(len(exp_variance))])
+
+	#print "Explained variance", exp_variance
+	plt.plot(x, exp_variance)
+	plt.title("Explained Variance")
+	plt.ylabel("Exp. variance")
+	plt.xlabel("Components")
+	plt.show()
+
+def pca_transform(trainset, testset, components):
+
+	pca = PCA(n_components=components, copy=True, whiten=False)
+	pca.fit(trainset)
+	X_train_trans = pca.transform(trainset)
+	X_test_trans = pca.transform(testset)
+
+	return X_train_trans, X_test_trans
 
 
 

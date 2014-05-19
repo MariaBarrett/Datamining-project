@@ -32,8 +32,6 @@ def normalize(traindata,testdata):
 
 	return traindata_normalized, testdata_normalized
 
-	#return traindata_normalized
-
 
 """
 This function takes a dataset and a max accepted number of standard deviations.
@@ -80,6 +78,7 @@ def princomp(train):
 def princomp_transform(trainset, testset, components):
 	#print trainset[0]
 	pca = PCA(n_components=components, copy=True, whiten=False)
+
 	pca.fit(trainset)
 	X_train_trans = pca.transform(trainset)
 	X_test_trans = pca.transform(testset)
