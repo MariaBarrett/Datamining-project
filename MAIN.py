@@ -9,13 +9,12 @@ import numpy as np
 from scipy import stats
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
-import clustering
 
 metadata = pickle.load( open( "metadata.p", "rb" ) )
 data = pickle.load( open( "dataset.p", "rb" ) )
 plusone = np.where(metadata[:,9] != "1")[0] # Get indexes for all texts written by more than one person
 data, metadata = np.delete(data, plusone, 0), np.delete(metadata, plusone, 0) # Remove all texts written by more than one person from data
-"""
+
 # RAW DATA SETS
 NLtrain_y, NLtrain_X, NLtest_y, NLtest_X = func.natlan(metadata,data)
 GRtrain_y, GRtrain_X, GRtest_y, GRtest_X = func.grade(metadata,data)
@@ -31,7 +30,7 @@ LEtrain_Xn, LEtest_Xn = func.normalize(LEtrain_X, LEtest_X)
 AUtrain_Xn20, AUtest_Xn20 = func.normalize(AUtrain_X20, AUtest_X20)
 AUtrain_XnAH, AUtest_XnAH = func.normalize(AUtrain_XAH, AUtest_XAH)
 AUtrain_Xn100, AUtest_Xn100 = func.normalize(AUtrain_X100, AUtest_X100)
-
+"""
 # TREE SELECTION FEATURES EVALUATION PLOTS
 func.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
 func.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
@@ -156,66 +155,31 @@ main("DTC", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
 main("KNN", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
-
+"""
 
 print "\n"+"*"*45
 print "PCA results"
 print "*"*45+"\n"
-func.inspect_pca(NLtrain_Xn[:,func.sub(["F2"])])
-func.inspect_pca(GRtrain_Xn[:,func.tree_selection(GRtrain_Xn, GRtrain_y, 215)])
-func.inspect_pca(LEtrain_Xn[:,func.tree_selection(LEtrain_Xn, LEtrain_y, 200)])
-func.inspect_pca(AUtrain_Xn20[:,func.tree_selection(AUtrain_Xn20, AUtrain_y20, 180)])
-func.inspect_pca(AUtrain_XnAH[:,func.sub(["F1","F2"])])
-func.inspect_pca(AUtrain_Xn100[:,func.tree_selection(AUtrain_Xn100, AUtrain_y100, 200)])
+noPC_NL = func.inspect_pca(NLtrain_Xn)
+noPC_GR = func.inspect_pca(GRtrain_Xn)
+noPC_LE = func.inspect_pca(LEtrain_Xn)
+noPC_AU20 = func.inspect_pca(AUtrain_Xn20)
+noPC_AUAH = func.inspect_pca(AUtrain_XnAH)
+noPC_AU100 = func.inspect_pca(AUtrain_Xn100)
 
 main("SVM", NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y,
-	[["F2"]], PCA=40)
+	[["all"]], PCA=noPC_NL)
 main("SVM", GRtrain_Xn, GRtrain_y, GRtest_Xn, GRtest_y,
-	[], tree_select=215, PCA=40)
+	[["all"]], PCA=noPC_GR)
 main("KNN", LEtrain_Xn, LEtrain_y, LEtest_Xn, LEtest_y,
-	[], tree_select=200, PCA=40)
+	[["all"]], PCA=noPC_LE)
 main("SVM", AUtrain_Xn20, AUtrain_y20, AUtest_Xn20, AUtest_y20,
-	[], tree_select=180, PCA=80)
+	[["all"]], PCA=noPC_AU20)
 main("SVM", AUtrain_XnAH, AUtrain_yAH, AUtest_XnAH, AUtest_yAH,
-	[["F1","F2"]], PCA=40)
+	[["all"]], PCA=noPC_AUAH)
 main("SVM", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
-	[], tree_select=200, PCA=40)
-"""
-fig = plt.figure()
-ax = fig.add_subplot(111)
+	[["all"]], PCA=noPC_AU100)
 
-## the data
-N = 6
-woPCA = [18, 35, 30, 35, 27]
-PCA = [25, 32, 34, 20, 25]
-
-## necessary variables
-ind = np.arange(N)                # the x locations for the groups
-width = 0.35                      # the width of the bars
-
-## the bars
-rects1 = ax.bar(ind, woPCA, width,
-                color='black',
-                error_kw=dict(elinewidth=2,ecolor='red'))
-
-rects2 = ax.bar(ind+width, PCA, width,
-                    color='red',
-                    error_kw=dict(elinewidth=2,ecolor='black'))
-
-# axes and labels
-ax.set_xlim(-width,len(ind)+width)
-ax.set_ylim(0,45)
-ax.set_ylabel('Scores')
-ax.set_title('Scores by group and gender')
-xTickMarks = ['Group'+str(i) for i in range(1,6)]
-ax.set_xticks(ind+width)
-xtickNames = ax.set_xticklabels(xTickMarks)
-plt.setp(xtickNames, rotation=45, fontsize=10)
-
-## add a legend
-ax.legend( (rects1[0], rects2[0]), ('Men', 'Women') )
-
-plt.show()
 
 
 

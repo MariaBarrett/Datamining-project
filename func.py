@@ -6,6 +6,7 @@ import pickle
 import matplotlib.pyplot as plt
 from sklearn import svm, grid_search
 import numpy as np
+from sklearn.decomposition import PCA
 from sklearn.ensemble import ExtraTreesClassifier
 import pylab as pl
 
@@ -102,7 +103,7 @@ def author(metadata, data, min_text, no_authors, in_test=1, feat_sort=False):
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 
-def sub(subset, best=None):
+def sub(subset):
 	
 	LEX_start = 0
 	LEX_end = featuremap.index('WB_frac_word_len20')
@@ -123,10 +124,8 @@ def sub(subset, best=None):
 		indices += range(STRUC_start, STRUC_end)
 	if 'all' in subset:
 		indices += range(LEX_start, STRUC_end)
-	if len(indices) > 0:
-		return indices
-	else:
-		return subset[0]
+
+	return indices
 
 
 def tree_selection(train_data,train_labels,number_of_features):
@@ -185,12 +184,20 @@ def normalize(traindata,testdata):
 
 	return traindata_normalized, testdata_normalized
 
-def inspect_pca(train):
-	
+def inspect_pca(train, expvar_threshold=0.95):
+
 	pca = PCA(copy=True)
 	transformed = pca.fit_transform(train)
 	components = pca.components_
 	exp_variance = pca.explained_variance_ratio_
+
+	c = 0
+	for i, ev in enumerate(exp_variance):
+		c += ev
+		if c > expvar_threshold:
+			expvar_index = i
+			break
+
 
 	x = np.array([i for i in range(len(exp_variance))])
 
@@ -200,6 +207,8 @@ def inspect_pca(train):
 	plt.ylabel("Exp. variance")
 	plt.xlabel("Components")
 	plt.show()
+
+	return expvar_index
 
 def pca_transform(trainset, testset, components):
 
