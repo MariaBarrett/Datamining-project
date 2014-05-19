@@ -24,36 +24,6 @@ def build_hist_box(data):
 
 	plt.show()
 
-# sort files
-
-def split_authors(data, threshold=3):
-	#Deprecated
-	''' strips authors with less than 3 (or threshold) articles. Split remaining article
-	ID's into train and test sets, ensuring each author is represented
-	with at least 1 article in train and exactly 1 in test.
-	Returns list of documents ID's (did) as lists '''
-	print "this function is deprecated!"
-
-	student_id = data['student_id'].unique()
-
-	train = []
-	train_id = []
-	test = []
-	test_id = []
-
-	for sid in student_id:
-		dids = data[data['student_id']==sid]['id']
-		length = len(dids)
-		if length > threshold:
-			dids = list(dids)
-			test.append(dids[r])
-			test_id.append(sid)
-			dids.pop(r)
-			for d in dids:
-				train.append(d)
-				train_id.append(sid)
-	return train, test, train_id, test_id
-
 def split(data, split=0.7):
 	''' splits documents into a train and test set. returns 2 lists of document ids.
 	'''
