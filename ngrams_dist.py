@@ -15,11 +15,50 @@ data = metadata.data
 n = 3
 profile_size = 2000
 
-def normalize(data):
-	"""This function normalizes a dataset. It is possible to include
-	a test dataset to be normalized with the mean and std calculated from
-	the training dataset."""
 
+
+
+
+# Load data
+
+print "Loading data"
+start = time.clock()
+
+
+train = pickle.load( open('ng_train'+str(n)+'.p', 'rb'))
+train_t = pickle.load( open('ng_train_t'+str(n)+'.p', 'rb'))
+train_freq = pickle.load( open('ng_train_freq'+str(n)+'.p', 'rb'))
+train_ngram = pickle.load( open('ng_train_ngram'+str(n)+'.p', 'rb'))
+
+test = pickle.load( open('ng_test'+str(n)+'.p', 'rb'))
+test_t = pickle.load( open('ng_test_t'+str(n)+'.p', 'rb'))
+test_ngram = pickle.load( open('ng_test_ngram'+str(n)+'.p', 'rb'))
+test_freq = pickle.load( open('ng_test_freq'+str(n)+'.p', 'rb'))
+
+
+'''
+doc_id = pickle.load(open('ng_doc_id'+str(n)+'.p', 'rb'))
+doc_ngram = pickle.load(open('ng_doc_ngram'+str(n)+'.p', 'rb'))
+doc_freq = pickle.load(open('ng_doc_freq'+str(n)+'.p', 'rb'))
+
+authors = pickle.load(open('ng_authors'+str(n)+'.p', 'rb'))
+auth_ngram = pickle.load(open('ng_auth_ngram'+str(n)+'.p', 'rb'))
+auth_freq = pickle.load(open('ng_auth_freq'+str(n)+'.p', 'rb'))
+'''
+
+
+print "Loading complete in ", time.clock() - start
+
+#N = 3 # number of nearest neighbours to vote for author
+
+# 3 experiments
+# distances using top overall frequencies
+#	Measure distances between author profiles and other documents
+# distances using ALL frequencies
+
+# measure distances using ALL ngrams
+
+def normalize(data):
 	mean = np.mean(data, axis=0)
 	std = np.std(data, axis=0)
 
@@ -69,50 +108,20 @@ def dissimilarity(ngram1, freq1, ngram2, freq2, ):
 		sigma += (2 * (f1-f2)/(f1+f2))**2
 	return sigma
 
-def get_author(did):
-	''' takes a document id and returns the associated author
-	'''
-	did = str(did) # sanitize input
-	global data
-	return int(data[data.id == did].student_id)
-
-def get_likely_author(aids):
-	''' takes a list of author ids and returns the most common value
-	'''
-	c = Counter(aids)
-	return c.items()[0][0]
 
 
+print "Testing L1"
+predictions = []
 
-# Load data
-
-print "Loading data"
-start = time.clock()
-
-all_freq = pickle.load(open('ng_all_freq'+str(n)+'.p', 'rb'))
-
-doc_id = pickle.load(open('ng_doc_id'+str(n)+'.p', 'rb'))
-doc_ngram = pickle.load(open('ng_doc_ngram'+str(n)+'.p', 'rb'))
-doc_freq = pickle.load(open('ng_doc_freq'+str(n)+'.p', 'rb'))
-
-authors = pickle.load(open('ng_authors'+str(n)+'.p', 'rb'))
-auth_ngram = pickle.load(open('ng_auth_ngram'+str(n)+'.p', 'rb'))
-auth_freq = pickle.load(open('ng_auth_freq'+str(n)+'.p', 'rb'))
-
-print "Loading complete in ", time.clock() - start
-
-#N = 3 # number of nearest neighbours to vote for author
-
-# 3 experiments
-# distances using top overall frequencies
-#	Measure distances between author profiles and other documents
-# distances using ALL frequencies
-
-# measure distances using ALL ngrams
-
-
-def get_author_from_id(did):
-	return int(did[:-1])
+for i in range(len(test)):
+	dissimilarities = []
+	for j in range(len(train_freq)):
+		dissimilarities.append(dissimilarity(test_ngram[i], test_freq[i], train_ngram[j], train_freq[j]))
+	index = np.argsort(dissimilarities)
+	pred = index[0]
+	predictions.append(pred)
+	print test[i], train_t[i] == pred, index, train_t[i], dissimilarities
+'''
 
 
 doc_predict = []
@@ -164,7 +173,7 @@ def check_top_x_likely_author(number_of_docs, random=True):
 	return index
 
 
-
+'''
 
 
 
