@@ -41,10 +41,9 @@ AUtrain_XnAH, AUtest_XnAH = clean.normalize(AUtrain_XAH, AUtest_XAH)
 #datasplit.inspect_tree_selection(AUtrain_Xn100, AUtrain_y100, "Author")
 #datasplit.inspect_tree_selection(AUtrain_XnAH, AUtrain_yAH, "Author")
 
-"""
+
 #Calling PCA functions
-clean.princomp(NLtrain_Xn)
-NLtrain_Xn_pca, NLtest_Xn_pca = clean.princomp_transform(NLtrain_Xn, NLtest_Xn, 100)
+"""
 clean.princomp(GRtrain_Xn)
 GRtrain_Xn_pca, GRtest_Xn_pca = clean.princomp_transform(GRtrain_Xn, GRtest_Xn, 100)
 clean.princomp(GRtrain_Xn)
@@ -57,7 +56,7 @@ AUtrain_Xn_pca, AUtest_Xn_pca = clean.princomp_transform(AUtrain_Xn, AUtest_Xn, 
 # SVM MAIN FUNCTION
 #----------------------------------------------------------------------------------------
 
-def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=False, anova=False):
+def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=False, PCA=False):
 	
 	if classifier == "SVM":
 		parameters = {'C': [0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128], 'gamma':[0.00001, 0.0001, 0.001, 0.01, 0.1, 1,]}
@@ -76,8 +75,10 @@ def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=Fals
 	
 	if tree_select:
 		subsets.append(["TREE SELECTION"])
-	if anova:
-		subsets.append(["ANOVA"])
+	if PCA:
+		subsets.append(["PCA"])
+
+	print X_train.shape
 
 	for ss in subsets:
 
@@ -87,11 +88,12 @@ def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=Fals
 
 		if ss == ["TREE SELECTION"]:
 			feat_index = datasplit.tree_selection(X_train, y_train, tree_select)
-		elif ss == ["ANOVA"]:
-			feat_index = datasplit.anova(X_train, y_train, anova) # Virker ikke... ENDNU!
+		elif ss == ["PCA"]:
+			X_train, X_test = clean.princomp_transform(X_train, X_test, PCA)
+			feat_index = np.arange(X_train.shape[1])
 		else: 
 			feat_index = datasplit.sub(ss)
-		
+		print X_train.shape
 		clf.fit(X_train[:,feat_index], y_train)
 		print "Best parameters: ", clf.best_params_
 		print "\n0-1 loss", clf.score(X_test[:,feat_index], y_test)
@@ -106,7 +108,7 @@ def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=Fals
 #----------------------------------------------------------------------------------------
 # EXPERIMENTS
 #----------------------------------------------------------------------------------------
-
+"""
 print "\n"+"*"*45
 print "Native Language"
 print "*"*45+"\n"
@@ -166,3 +168,15 @@ main("DTC", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
 main("KNN", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
+"""
+
+print "\n"+"*"*45
+print "PCA optimized results"
+print "*"*45+"\n"
+
+clean.princomp(NLtrain_Xn[:,datasplit.sub(["F2"])])
+main("SVM", NLtrain_Xn[:,datasplit.sub(["F2"])], NLtrain_y, NLtest_Xn[:,datasplit.sub(["F2"])], NLtest_y,
+	[], PCA=200)
+
+
+

@@ -195,29 +195,6 @@ def inspect_tree_selection(train_data,train_labels, task):
   pl.show()
 
 
-def anova(data,labels,number_of_features):
-	"""This function calculates a Lasse's K for feature selection. The
-	lower the value, the more effective the feature is in describing a given
-	class labels"""
-
-	unique = set(labels)
-	group_std = list()
-
-	for l in unique:
-		index = np.where(labels==l)[0]
-		group = np.array([data[i] for i in index])
-		group_std.append(np.std(group, axis=0))
-
-	av_mean_std = np.mean(np.array(group_std), axis=0)
-	overall_std = np.std(data, axis=0)
-
-	l_scores = av_mean_std/overall_std
-	indices = np.argsort(l_scores)
-
-	return indices[:number_of_features]
-
-
-
 
 
 

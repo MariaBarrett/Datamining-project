@@ -61,9 +61,6 @@ def outlierdetection(dataset, metadata, numberofstdev):
 #----------------------------------------------------------------------------------------
 
 def princomp(train):
-	print "#" * 45
-	print "PCA"
-	print "#" * 45
 	pca = PCA(copy=True)
 	transformed = pca.fit_transform(train)
 	components = pca.components_
@@ -88,7 +85,6 @@ def princomp_transform(trainset, testset, components):
 	X_test_trans = pca.transform(testset)
 	#orig = pca.inverse_transform(X_train_trans)
 	#print orig[0]
-	print "PCA transformation done"
 	return X_train_trans, X_test_trans
 
 """
