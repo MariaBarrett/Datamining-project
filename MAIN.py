@@ -2,7 +2,6 @@ from __future__ import division
 from collections import Counter
 from featuremap import featuremap, metadatamap
 import func
-import func
 import pickle
 import matplotlib.pyplot as plt
 from sklearn import svm, tree, neighbors, grid_search
