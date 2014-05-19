@@ -34,7 +34,6 @@ AUtrain_Xn100, AUtest_Xn100 = clean.normalize(AUtrain_X100, AUtest_X100)
 AUtrain_XnAH, AUtest_XnAH = clean.normalize(AUtrain_XAH, AUtest_XAH)
 
 
-<<<<<<< HEAD
 # TREE SELECTION INDICES
 datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
 #NLtree_selection = datasplit.tree_selection(NLtrain_Xn, NLtrain_y, 20)
@@ -46,7 +45,7 @@ datasplit.inspect_tree_selection(AUtrain_Xn20, AUtrain_y20, "Author")
 #AUtree_selection = datasplit.tree_selection(AUtrain_Xn, AUtrain_y, 20)
 datasplit.inspect_tree_selection(AUtrain_Xn100, AUtrain_y100, "Author")
 #AUtree_selection = datasplit.tree_selection(AUtrain_Xn, AUtrain_y, 20)
-=======
+
 # TREE SELECTION FEATURES EVALUATION PLOTS
 #datasplit.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
 #datasplit.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
@@ -54,7 +53,6 @@ datasplit.inspect_tree_selection(AUtrain_Xn100, AUtrain_y100, "Author")
 #datasplit.inspect_tree_selection(AUtrain_Xn20, AUtrain_y20, "Author")
 #datasplit.inspect_tree_selection(AUtrain_Xn100, AUtrain_y100, "Author")
 #datasplit.inspect_tree_selection(AUtrain_XnAH, AUtrain_yAH, "Author")
->>>>>>> FETCH_HEAD
 
 """
 #Calling PCA functions
