@@ -9,12 +9,12 @@ featuremap = [
 'LEX_frac__', 'LEX_frac_=', 'LEX_frac_+', 'LEX_frac_>', 'LEX_frac_<', 'LEX_frac_[' , 'LEX_frac_]', 
 'LEX_frac_{', 'LEX_frac_}', 'LEX_frac_/', 'LEX_frac_\\', 'LEX_frac_|', 'LEX_frac_(', 'LEX_frac_)', 
 
-'WB_num_words', 'WB_frac_short_words', 'WB_frac_char_in_words', 'WB_av_lenght', 'WB_av_charinsent', 
-'WB_av_wordinsent', 'WB_num_dif_words', 'WB_frac_hapax_leg', 'WB_frac_hapax_dis', 'WB_Yule', 'WB_Simpson', 'WB_Sichel', 'WB_Brunet', 
-'WB_Honore', 'WB_frac_word_len1', 'WB_frac_word_len2', 'WB_frac_word_len3', 'WB_frac_word_len4', 'WB_frac_word_len5', 
-'WB_frac_word_len6', 'WB_frac_word_len7', 'WB_frac_word_len8', 'WB_frac_word_len9', 'WB_frac_word_len10', 'WB_frac_word_len11', 
-'WB_frac_word_len12', 'WB_frac_word_len13', 'WB_frac_word_len14', 'WB_frac_word_len15', 'WB_frac_word_len16', 
-'WB_frac_word_len17', 'WB_frac_word_len18', 'WB_frac_word_len19', 'WB_frac_word_len20', 
+'LEX_num_words', 'LEX_frac_short_words', 'LEX_frac_char_in_words', 'LEX_av_wordlenght', 'LEX_av_charinsent', 
+'LEX_av_wordinsent', 'LEX_num_dif_words', 'LEX_frac_hapax_leg', 'LEX_frac_hapax_dis', 'LEX_Yule', 'LEX_Simpson', 'LEX_Sichel', 'LEX_Brunet', 
+'LEX_Honore', 'LEX_frac_word_len1', 'LEX_frac_word_len2', 'LEX_frac_word_len3', 'LEX_frac_word_len4', 'LEX_frac_word_len5', 
+'LEX_frac_word_len6', 'LEX_frac_word_len7', 'LEX_frac_word_len8', 'LEX_frac_word_len9', 'LEX_frac_word_len10', 'LEX_frac_word_len11', 
+'LEX_frac_word_len12', 'LEX_frac_word_len13', 'LEX_frac_word_len14', 'LEX_frac_word_len15', 'LEX_frac_word_len16', 
+'LEX_frac_word_len17', 'LEX_frac_word_len18', 'LEX_frac_word_len19', 'LEX_frac_word_len20', 
 
 
 'SYN_frac_,', 'SYN_frac_.', 'SYN_frac_?', 
@@ -68,15 +68,15 @@ metadatamap = [
 
 """
 LEX_featureset = []
-WB_featurset = []
+LEX_featurset = []
 SYN_featureset = []
 STRUC_featureset = []
 
 for feature in featuremap:
 	if 'LEX' in feature:
 		LEX_featureset.append(feature)
-	elif 'WB' in feature:
-		WB_featurset.append(feature)
+	elif 'LEX' in feature:
+		LEX_featurset.append(feature)
 	elif 'SYN' in feature:
 		SYN_featureset.append(feature) 
 	elif 'STRUC' in feature:
