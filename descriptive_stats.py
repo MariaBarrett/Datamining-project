@@ -9,7 +9,10 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import classification_report
 import pandas as pd
 import func, pickle
-
+'''
+Generates a series of plots and summary statistics of the entire dataset.
+Generates a series of plots of the best features for grade, level and native language tasks based on the training set.
+'''
 
 # Load data
 
@@ -66,7 +69,11 @@ def build_hist_box(data, groupby='disciplinary group', columns = ['words','s-uni
 #build_hist_box(mdata, groupby='level')
 #build_hist_box(mdata, groupby='grade')
 
-'''
+print mdata[['words', 's-units', 'p-units']].describe()
+print mdata[['words', 's-units', 'p-units', 'L1']].groupby('L1').describe()
+print mdata[['words', 's-units', 'p-units', 'grade']].groupby('grade').describe()
+print mdata[['words', 's-units', 'p-units', 'level']].groupby('level').describe()
+
 # top 10 features for native language
 plt.figure()
 NL = ['SYN_frac_while', 'SYN_frac_this', 'SYN_frac_besides', 'LEX_frac_h', 'SYN_frac_since', 'SYN_frac_nevertheless', 'SYN_frac_among', 'SYN_frac_might', 'SYN_frac_whilst', 'SYN_frac_a']
@@ -88,12 +95,11 @@ for i, t in enumerate(NL):
 	new_nl.append(t+'ENG')
 	new_nl.append(t+'OTH')
 plt.plot([0]*22, 'y')
+plt.ylim([-4.5,17])
 plt.boxplot(everything)
 plt.plot(range(1,21),nl_mean, 'o')
-plt.xticks(range(20), new_nl, size='small', rotation=45)
+plt.xticks(range(1,21), new_nl, size='small', rotation=45, horizontalalignment='right')
 plt.title('top 10 features for Native Language (eng vs oth)')
-'''
-
 
 
 # top 10 features for grade
@@ -119,13 +125,14 @@ for i, t in enumerate(GR):
 	new_nl.append(t+' M')
 	new_nl.append(t+' D')
 plt.plot([0]*22, 'y')
+plt.ylim([-4.5,10])
 plt.boxplot(everything)
 plt.plot(range(1,21),nl_mean, 'o')
 plt.xticks(range(1,21), new_nl, size='small', rotation=45, horizontalalignment='right')
 plt.title('top 10 features for grade (M vs D)')
 
 
-'''
+
 
 # top 5 features for Academic level
 
@@ -159,13 +166,6 @@ plt.boxplot(everything)
 plt.plot(range(1,21),LE_mean, 'o')
 plt.xticks(range(1,21), new_LE, size='small', rotation=45, horizontalalignment='right')
 plt.title('top 5 features for Academic level')
-
-
-
-
-'''
-
-
 
 
 
