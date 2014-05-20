@@ -1,0 +1,45 @@
+
+LEXICAL FEATURES
+
+Character based:
+LEX_num_characters		Total number of characters
+LEX_frac_alphabetic		Total number of alphabetic characters
+LEX_frac_upper			Total number of upper-case characters
+LEX_frac_digit			Total number of digit characters
+LEX_frac_whitesp		Total number of white-space characters
+LEX_frac_(a-z)			Frequency of letters (26 features) A-Z
+LEX_frac_(spec_char)		Frequency of special characters (23 features) ~ , @, #, $, %, ^, &, *, -, _, = ,+, >, <, [, ], {, }, /, \, |
+
+Word-based features:
+LEX_num_words			Total number of words
+LEX_frac_short_words		Total number of short words (less than four characters)
+LEX_frac_char_in_words		Total number of characters in words
+LEX_av_lenght			Average word length
+LEX_av_charinsent		Average sentence length in terms of character
+LEX_av_wordinsent		Average sentence length in terms of word
+LEX_num_dif_words		Total different words
+LEX_frac_hapax_leg		Hapax legomena - Frequency of once-occurring words
+LEX_frac_hapax_dis		Hapax dislegomena - Frequency of twice-occurring words
+LEX_Yule			Yule’s K measure - A vocabulary richness measure deﬁned by Yule
+LEX_Simpson			Simpson’s D measure - A vocabulary richness measure deﬁned by Simpson
+LEX_Sichel			Sichel’s S measure - A vocabulary richness measure deﬁned by Sichele
+LEX_Brunet			Brunet’s W measure - A vocabulary richness measure deﬁned by Brune
+LEX_Honore			Honore’s R measure - A vocabulary richness measure deﬁned by Honore
+LEX_frac_word_(len1-len20)	Word length frequency distribution (20 features)
+
+
+SYNTACTIC FEATURES
+
+SYN_frac_(punc)			Frequency of punctuations (8 features) “,”, “.”, “?”, “!”, “:”, “;”, “ ’ ” ,“ ” “
+SYN_frac_(func_word)		Frequency of function words (224 features) The whole list is found in the file en-func-words.txt (only single words - not phrases)
+SYN_frac_POS_(tag)		Frequency of POS tags (12 features) ADJ, ADP, ADV, CONJ, DET, NOUN, NUM, PRON, PRT, VERB, X (Universal POS tags)
+
+
+STRUCTURAL FEATURES
+
+STRUC_num_sent			Total number of sentences
+STRUC_num_para			Total number of paragraphs
+STRUC_av_sent_per_para		Number of sentences per paragraph
+STRUC_av_char_per_para		Number of characters per paragraph
+STRUC_av_word_per_para		Number of words per paragraph
+STRUC_num_blockquotes		Number of block quotes
