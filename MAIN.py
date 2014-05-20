@@ -30,7 +30,7 @@ LEtrain_Xn, LEtest_Xn = func.normalize(LEtrain_X, LEtest_X)
 AUtrain_Xn20, AUtest_Xn20 = func.normalize(AUtrain_X20, AUtest_X20)
 AUtrain_XnAH, AUtest_XnAH = func.normalize(AUtrain_XAH, AUtest_XAH)
 AUtrain_Xn100, AUtest_Xn100 = func.normalize(AUtrain_X100, AUtest_X100)
-"""
+
 # TREE SELECTION FEATURES EVALUATION PLOTS
 func.inspect_tree_selection(NLtrain_Xn, NLtrain_y, "Native language")
 func.inspect_tree_selection(GRtrain_Xn, GRtrain_y, "Grade")
@@ -38,12 +38,20 @@ func.inspect_tree_selection(LEtrain_Xn, LEtrain_y, "Academic level")
 func.inspect_tree_selection(AUtrain_Xn20, AUtrain_y20, "Author 20")
 func.inspect_tree_selection(AUtrain_XnAH, AUtrain_yAH, "Author AH20")
 func.inspect_tree_selection(AUtrain_Xn100, AUtrain_y100, "Author 100")
-"""
+
 #----------------------------------------------------------------------------------------
 # SVM MAIN FUNCTION
 #----------------------------------------------------------------------------------------
 
 def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=False, PCA=False):
+
+	""" This function takes a training dataset and it's target labels and train a classifier
+	("SVM", "DTC" or "KNN") and test the classifier on the given test dataset and it's target
+	labels. The subsets parameter is used to define multiple different subsets to train the
+	classifier on. The tree_select parameter defines another subset, but utilizes a decision tree
+	algorithm to find the best features. The parameter is set to the number of "best features" you
+	want to use. The PCA parameter takes the number of principal components to mirror the dataset on
+	and hence reduce the feature space size to. """
 	
 	if classifier == "SVM":
 		parameters = {'C': [0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128], 'gamma':[0.00001, 0.0001, 0.001, 0.01, 0.1, 1,]}
@@ -158,7 +166,7 @@ main("KNN", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 """
 
 print "\n"+"*"*45
-print "PCA results"
+print "PCA results: explained variance = 95 %"
 print "*"*45+"\n"
 noPC_NL = func.inspect_pca(NLtrain_Xn)
 noPC_GR = func.inspect_pca(GRtrain_Xn)

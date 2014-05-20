@@ -11,6 +11,8 @@ from sklearn.ensemble import ExtraTreesClassifier
 import pylab as pl
 
 def natlan(metadata, data):
+	""" Makes an 80-20 train-test split for the native language task.
+	Before splitting the dataset is shuffled. """
 
 	random.seed(448)
 	labels = np.array([1 if l == 'English' else 0 for l in metadata[:,-4]]) # 1 = Native (English), 0 = Non-native
@@ -27,6 +29,9 @@ def natlan(metadata, data):
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 def grade(metadata, data):
+	""" Makes an 80-20 train-test split for the grade task.
+	Before splitting all texts with the grade value 'unknown' are removed
+	from dataset and the dataset is shuffled. """
 
 	random.seed(448)
 	unknown = np.where(metadata[:,8]=="unknown")[0]
@@ -47,6 +52,9 @@ def grade(metadata, data):
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 def level(metadata, data):
+	""" Makes an 80-20 train-test split for the academic level task.
+	Before splitting all texts with the level value 'unknown' are removed
+	from dataset and the dataset is shuffled. """
 
 	random.seed(448)
 	unknown = np.where(metadata[:,1]=="unknown")[0]
@@ -68,6 +76,13 @@ def level(metadata, data):
 	return np.array(train[0]), np.array(train[1]), np.array(test[0]), np.array(test[1])
 
 def author(metadata, data, min_text, no_authors, in_test=1, feat_sort=False):
+	""" Makes a train-test split for the author task. The parameter min_text
+	defines the number of texts each author must have contributed to the dataset
+	in order to be included in the sample. The parameter in_test defines how many
+	texts from each author should be alocated to the test data. These texts are
+	randomly selected from all of the authors texts. The feat_sort parameter takes
+	a tuple with a column argument and a value argument in order to exclude all data
+	points not containing the given value in the given column. """
 
 	if feat_sort:
 		sort_delete = np.where(metadata[:,feat_sort[0]] != feat_sort[1])[0]
@@ -104,6 +119,9 @@ def author(metadata, data, min_text, no_authors, in_test=1, feat_sort=False):
 
 
 def sub(subset):
+	""" Given one or more subset names (F1, F2, F3 or all) in a list,
+	this function returns the indices needed to find the specific
+	feature combinations. """
 	
 	LEX_start = 0
 	LEX_end = featuremap.index('WB_frac_word_len20')
@@ -129,42 +147,46 @@ def sub(subset):
 
 
 def tree_selection(train_data,train_labels,number_of_features):
-  
-  forest = ExtraTreesClassifier(n_estimators=250, random_state=0)
-  forest.fit(train_data, train_labels)
-  importances = forest.feature_importances_
-  indices = np.argsort(importances)[::-1]
+	""" Returns the indices for the best parameters of a given dataset
+	and it's target labels. The number_of_features parameter should be
+	choosen by visual inspection using the inspect_tree_selection function. """ 
 
-  return indices[:number_of_features]
+	forest = ExtraTreesClassifier(n_estimators=250, random_state=0)
+	forest.fit(train_data, train_labels)
+	importances = forest.feature_importances_
+	indices = np.argsort(importances)[::-1]
+
+	return indices[:number_of_features]
 
 
 def inspect_tree_selection(train_data,train_labels, task):
-  
-  forest = ExtraTreesClassifier(n_estimators=250, random_state=0)
-  forest.fit(train_data, train_labels)
-  importances = forest.feature_importances_
-  std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
-  indices = np.argsort(importances)[::-1]
+	""" Given a dataset and it's target labels, this
+	function sorts the best features and prints and visualize them """
 
-  # Print the feature ranking
-  print "-"*45
-  print("\nFeature ranking for %s task:" %(task))
+	forest = ExtraTreesClassifier(n_estimators=250, random_state=0)
+	forest.fit(train_data, train_labels)
+	importances = forest.feature_importances_
+	std = np.std([tree.feature_importances_ for tree in forest.estimators_], axis=0)
+	indices = np.argsort(importances)[::-1]
 
-  for f in range(len(indices)):
-      print("%d. feature, name: %s, importance: %f" % (f + 1, featuremap[indices[f]], importances[indices[f]]))
+	# Print the feature ranking
+	print "-"*45
+	print("\nFeature ranking for %s task:" %(task))
 
-  # Plot the feature importances of the forest
-  pl.figure()
-  n = train_data.shape[1]
-  pl.title("%s: Sorted feature importance" %(task))
-  pl.bar(range(n), importances[indices][:n], color="black", align="center")
-  pl.xlim([-1, (n)])
-  pl.show()
+	for f in range(len(indices)):
+	  print("%d. feature, name: %s, importance: %f" % (f + 1, featuremap[indices[f]], importances[indices[f]]))
+
+	# Plot the feature importances of the forest
+	pl.figure()
+	n = train_data.shape[1]
+	pl.title("%s: Sorted feature importance" %(task))
+	pl.bar(range(n), importances[indices][:n], color="black", align="center")
+	pl.xlim([-1, (n)])
+	pl.show()
 
 def normalize(traindata,testdata):
-	"""This function normalizes a dataset. It is possible to include
-	a test dataset to be normalized with the mean and std calculated from
-	the training dataset."""
+	""" This function normalizes a dataset (0 mean, unit variance) given a dataset that has
+	already been splitted into separate train and test sets. """
 
 	mean = np.mean(traindata, axis=0)
 	std = np.std(traindata, axis=0)
@@ -185,6 +207,10 @@ def normalize(traindata,testdata):
 	return traindata_normalized, testdata_normalized
 
 def inspect_pca(train, expvar_threshold=0.95):
+	""" Given a dataset and a threshold for the explained variance, this
+	function returns the number of principal components to use in order to
+	account for the given amount of explained variance and plots the 
+	explained variance for all of the the new features. """
 
 	pca = PCA(copy=True)
 	transformed = pca.fit_transform(train)
@@ -198,7 +224,6 @@ def inspect_pca(train, expvar_threshold=0.95):
 			expvar_index = i
 			break
 
-
 	x = np.array([i for i in range(len(exp_variance))])
 
 	#print "Explained variance", exp_variance
@@ -211,6 +236,9 @@ def inspect_pca(train, expvar_threshold=0.95):
 	return expvar_index
 
 def pca_transform(trainset, testset, components):
+	""" Transform a training dataset and a test dataset by mirroring the
+	data on the specified number of principal components for the training
+	dataset. """
 
 	pca = PCA(n_components=components, copy=True, whiten=False)
 	pca.fit(trainset)
