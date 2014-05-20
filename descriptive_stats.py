@@ -53,8 +53,6 @@ mdata.L1[mdata.L1 != 'English'] = 'Other'
 
 def build_hist_box(data, groupby='disciplinary group', columns = ['words','s-units','p-units']):
 
-	data.groupby([groupby])[columns].describe()
-
 	for g in columns:
 		data[g].hist(by=data[groupby])
 		plt.suptitle(g+' grouped by '+groupby)
@@ -66,13 +64,42 @@ def build_hist_box(data, groupby='disciplinary group', columns = ['words','s-uni
 # Begin descriptive
 #----------------------------------------------------------------------------------------
 
-#build_hist_box(mdata, groupby='level')
-#build_hist_box(mdata, groupby='grade')
+
+students = list(mdata.student_id.unique())
+multi_students = []
+for s in students:
+	if len(mdata[mdata.student_id == s]['disciplinary group'].unique()) > 1:
+		multi_students.append(s)
+
+
+build_hist_box(mdata, groupby='level')
+build_hist_box(mdata, groupby='grade')
+build_hist_box(mdata, groupby='L1')
+
+mdata.hist(column='words', bins = range(0,14000,300))
 
 print mdata[['words', 's-units', 'p-units']].describe()
 print mdata[['words', 's-units', 'p-units', 'L1']].groupby('L1').describe()
 print mdata[['words', 's-units', 'p-units', 'grade']].groupby('grade').describe()
 print mdata[['words', 's-units', 'p-units', 'level']].groupby('level').describe()
+
+awo = np.array(mdata.words.dropna())
+M = np.array(mdata[mdata.grade == 'M'].words.dropna())
+D = np.array(mdata[mdata.grade == 'D'].words.dropna())
+l1 = np.array(mdata[mdata.level == 1].words.dropna())
+l2 = np.array(mdata[mdata.level == 2].words.dropna())
+l3 = np.array(mdata[mdata.level == 3].words.dropna())
+l4 = np.array(mdata[mdata.level == 4].words.dropna())
+NL1 = np.array(mdata[mdata.L1 == 'English'].words.dropna())
+NL2 = np.array(mdata[mdata.L1 != 'English'].words.dropna())
+columns = ['Whole corpus', 'Grade M', 'Grade D', 'level 1', 'level 2','level 3', 'level 4', 'English', 'Other']
+
+plt.boxplot([awo, M, D, l1, l2, l3, l4, NL1, NL2])
+plt.plot(range(1,10), [awo.mean(), M.mean(), D.mean(), l1.mean(), l2.mean(), l3.mean(), l4.mean(), NL1.mean(), NL2.mean()], 'o')
+plt.xticks(range(1,10), columns, size='small', rotation=45, horizontalalignment='right')
+plt.plot([0]*11, 'y')
+plt.title('Number of words grouped by different catagories')
+
 
 # top 10 features for native language
 plt.figure()
@@ -166,6 +193,39 @@ plt.boxplot(everything)
 plt.plot(range(1,21),LE_mean, 'o')
 plt.xticks(range(1,21), new_LE, size='small', rotation=45, horizontalalignment='right')
 plt.title('top 5 features for Academic level')
+
+# top 6-10 features for Academic level
+
+plt.figure()
+LE = [
+'LEX_av_wordlenght',
+'LEX_frac_(', 
+'LEX_frac_h', 
+'LEX_frac_)',
+'STRUC_num_sent',
+]
+
+LE_index = [featuremap.index(i) for i in LE]
+LE_classes = {}
+
+for i in range(1,5):
+	# get all columns in LE from data where level == 1,2,3 or 4
+	LE_classes[i] = LEtrain_Xn[LEtrain_y == i][:,LE_index]
+
+everything = []
+new_LE = []
+LE_mean = []
+for i, t in enumerate(LE):
+	for j in LE_classes:
+		everything.append(LE_classes[j][:,i])
+		LE_mean.append(LE_classes[j][:,i].mean())
+		new_LE.append(t+' lvl'+str(j))
+plt.plot([0]*22, 'y')
+plt.ylim([-4.5,8])
+plt.boxplot(everything)
+plt.plot(range(1,21),LE_mean, 'o')
+plt.xticks(range(1,21), new_LE, size='small', rotation=45, horizontalalignment='right')
+plt.title('top 6-10 features for Academic level')
 
 
 
