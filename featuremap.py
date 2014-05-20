@@ -63,7 +63,7 @@ metadatamap = [
 'documentid', "level", "date", "module title", "module code", "genre family", "discipline", "disciplinary group", 
 "grade", "number of authors", "number of words", "number of s-units", "number of p", "number of tables", "number of figures", 
 "number of block quotes", "number of formulae", "number of lists", "number of paragraphs formatted like lists", 
-"abstract present", "average words per s-unit", "average s-units per", "macrotype of assignment", "year of birth", "first language", "education", "course", "student ID"
+"abstract present", "average words per s-unit", "average s-units per", "macrotype of assignment", "gender", "year of birth", "first language", "education", "course", "student ID"
 ]
 
 """
