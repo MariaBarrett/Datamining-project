@@ -179,7 +179,7 @@ def inspect_tree_selection(train_data,train_labels, task):
 	# Plot the feature importances of the forest
 	pl.figure()
 	n = train_data.shape[1]
-	pl.title("%s: Sorted feature importance" %(task))
+	pl.title("%s: Sorted tree selection feature importance" %(task))
 	pl.bar(range(n), importances[indices][:n], color="black", align="center")
 	pl.xlim([-1, (n)])
 	pl.show()
@@ -206,11 +206,11 @@ def normalize(traindata,testdata):
 
 	return traindata_normalized, testdata_normalized
 
-def inspect_pca(train, expvar_threshold=0.95):
+def inspect_pca(train, task, expvar_threshold=0.95):
 	""" Given a dataset and a threshold for the explained variance, this
-	function returns the number of principal components to use in order to
+	function returns the number of components to use in order to
 	account for the given amount of explained variance and plots the 
-	explained variance for all of the the new features. """
+	explained variance for all of the components. """
 
 	pca = PCA(copy=True)
 	transformed = pca.fit_transform(train)
@@ -228,8 +228,8 @@ def inspect_pca(train, expvar_threshold=0.95):
 
 	#print "Explained variance", exp_variance
 	plt.plot(x, exp_variance)
-	plt.title("Explained Variance")
-	plt.ylabel("Exp. variance")
+	plt.title("%s: Explained Variance" %(task))
+	plt.ylabel("Explained variance")
 	plt.xlabel("Components")
 	plt.show()
 

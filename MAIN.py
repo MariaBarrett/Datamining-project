@@ -168,12 +168,12 @@ main("KNN", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 print "\n"+"*"*45
 print "PCA results: explained variance = 95 %"
 print "*"*45+"\n"
-noPC_NL = func.inspect_pca(NLtrain_Xn)
-noPC_GR = func.inspect_pca(GRtrain_Xn)
-noPC_LE = func.inspect_pca(LEtrain_Xn)
-noPC_AU20 = func.inspect_pca(AUtrain_Xn20)
-noPC_AUAH = func.inspect_pca(AUtrain_XnAH)
-noPC_AU100 = func.inspect_pca(AUtrain_Xn100)
+noPC_NL = func.inspect_pca(NLtrain_Xn, "Native language")
+noPC_GR = func.inspect_pca(GRtrain_Xn, "Grade")
+noPC_LE = func.inspect_pca(LEtrain_Xn, "Academic level")
+noPC_AU20 = func.inspect_pca(AUtrain_Xn20, "Author 20")
+noPC_AUAH = func.inspect_pca(AUtrain_XnAH, "Author AH20")
+noPC_AU100 = func.inspect_pca(AUtrain_Xn100, "Author 100")
 
 main("SVM", NLtrain_Xn, NLtrain_y, NLtest_Xn, NLtest_y,
 	[["all"]], PCA=noPC_NL)
