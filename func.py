@@ -247,6 +247,31 @@ def pca_transform(trainset, testset, components):
 
 	return X_train_trans, X_test_trans
 
+def best_vc_pca():
+	""" This function plots the PCA results vs the best results
+	for our different feature selection. """
+
+	PCA = [0.8883, 0.6509, 0.4261, 0.875, 0.825, 0.685]
+	best = [0.8958, 0.6717, 0.5436, 0.95, 0.9, 0.76]
+	ind = np.arange(0.8,6.8)
+	width = 0.3
+
+	ax = plt.subplot(111)
+	PCA_rec = ax.bar(ind, PCA,width=width,color='b',align='center')
+	best_rec = ax.bar(ind-width, best,width=width,color='g',align='center')
+	plt.title("Best results compared to PCA results (EV = 95 %)")
+	plt.ylabel("0-1 loss")
+
+	ax.set_xlim(0,len(ind)+width)
+	xTickMarks = ["NL","GR","LE","AU20","AUAH","AU100"]
+	ax.set_xticks(ind-width/2)
+	xtickNames = ax.set_xticklabels(xTickMarks)
+	plt.setp(xtickNames, rotation=45, fontsize=10)
+
+	ax.legend( (PCA_rec[0], best_rec[0]), ('PCA', 'best') )
+
+	plt.show()
+
 
 
 

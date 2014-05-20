@@ -103,7 +103,7 @@ def main(classifier, X_train, y_train, X_test, y_test, subsets, tree_select=Fals
 #----------------------------------------------------------------------------------------
 # EXPERIMENTS
 #----------------------------------------------------------------------------------------
-"""
+
 print "\n"+"*"*45
 print "Native Language"
 print "*"*45+"\n"
@@ -163,7 +163,7 @@ main("DTC", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
 main("KNN", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 	[["F1"],["F2"],["F3"],["F1","F2"],["F1","F3"],["F2","F3"],["all"]], tree_select=200)
-"""
+
 
 print "\n"+"*"*45
 print "PCA results: explained variance = 95 %"
@@ -188,6 +188,6 @@ main("SVM", AUtrain_XnAH, AUtrain_yAH, AUtest_XnAH, AUtest_yAH,
 main("SVM", AUtrain_Xn100, AUtrain_y100, AUtest_Xn100, AUtest_y100,
 	[["all"]], PCA=noPC_AU100)
 
-
+func.best_vc_pca()
 
 
