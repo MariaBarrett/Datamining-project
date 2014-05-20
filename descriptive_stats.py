@@ -66,7 +66,7 @@ def build_hist_box(data, groupby='disciplinary group', columns = ['words','s-uni
 #build_hist_box(mdata, groupby='level')
 #build_hist_box(mdata, groupby='grade')
 
-
+'''
 # top 10 features for native language
 plt.figure()
 NL = ['SYN_frac_while', 'SYN_frac_this', 'SYN_frac_besides', 'LEX_frac_h', 'SYN_frac_since', 'SYN_frac_nevertheless', 'SYN_frac_among', 'SYN_frac_might', 'SYN_frac_whilst', 'SYN_frac_a']
@@ -79,14 +79,22 @@ other = NLtrain_Xn[NLtrain_y == 0][:,NL_index]
 
 everything = []
 new_nl = []
+nl_mean = []
 for i, t in enumerate(NL):
 	everything.append(english[:,i])
 	everything.append(other[:,i])
+	nl_mean.append(english[:,i].mean())
+	nl_mean.append(other[:,i].mean())
 	new_nl.append(t+'ENG')
 	new_nl.append(t+'OTH')
+plt.plot([0]*22, 'y')
 plt.boxplot(everything)
+plt.plot(range(1,21),nl_mean, 'o')
 plt.xticks(range(20), new_nl, size='small', rotation=45)
 plt.title('top 10 features for Native Language (eng vs oth)')
+'''
+
+
 
 # top 10 features for grade
 plt.figure()
@@ -102,24 +110,60 @@ D = GRtrain_Xn[GRtrain_y == 0][:,GR_index]
 
 everything = []
 new_nl = []
+nl_mean = []
 for i, t in enumerate(GR):
-	everything.append(english[:,i])
-	everything.append(other[:,i])
-	new_nl.append(t+'ENG')
-	new_nl.append(t+'OTH')
+	everything.append(M[:,i])
+	everything.append(D[:,i])
+	nl_mean.append(M[:,i].mean())
+	nl_mean.append(D[:,i].mean())
+	new_nl.append(t+' M')
+	new_nl.append(t+' D')
+plt.plot([0]*22, 'y')
 plt.boxplot(everything)
-plt.xticks(range(20), new_nl, size='small', rotation=45)
-plt.title('top 10 features for Native Language (eng vs oth)')
+plt.plot(range(1,21),nl_mean, 'o')
+plt.xticks(range(1,21), new_nl, size='small', rotation=45, horizontalalignment='right')
+plt.title('top 10 features for grade (M vs D)')
+
+
+'''
+
+# top 5 features for Academic level
+
+plt.figure()
+LE = [
+'LEX_num_characters', 
+'LEX_num_words', 
+'LEX_num_dif_words', 
+'LEX_frac_whitesp', 
+'SYN_frac_all_funcwords', 
+]
+
+LE_index = [featuremap.index(i) for i in LE]
+LE_classes = {}
+
+for i in range(1,5):
+	# get all columns in LE from data where level == 1,2,3 or 4
+	LE_classes[i] = LEtrain_Xn[LEtrain_y == i][:,LE_index]
+
+everything = []
+new_LE = []
+LE_mean = []
+for i, t in enumerate(LE):
+	for j in LE_classes:
+		everything.append(LE_classes[j][:,i])
+		LE_mean.append(LE_classes[j][:,i].mean())
+		new_LE.append(t+' lvl'+str(j))
+plt.plot([0]*22, 'y')
+plt.ylim([-4.5,8])
+plt.boxplot(everything)
+plt.plot(range(1,21),LE_mean, 'o')
+plt.xticks(range(1,21), new_LE, size='small', rotation=45, horizontalalignment='right')
+plt.title('top 5 features for Academic level')
 
 
 
 
-
-
-
-
-
-
+'''
 
 
 
