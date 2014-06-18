@@ -124,7 +124,7 @@ def sub(subset):
 	feature combinations. """
 	
 	LEX_start = 0
-	LEX_end = featuremap.index('WB_frac_word_len20')
+	LEX_end = featuremap.index('LEX_frac_word_len20')
 
 	SYN_start = featuremap.index('SYN_frac_,')
 	SYN_end = featuremap.index('SYN_frac_POS_X')
